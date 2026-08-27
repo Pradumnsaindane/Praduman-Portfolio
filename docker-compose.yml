@@ -1,0 +1,67 @@
+# ─────────────────────────────────────────────────────────────────────────
+#  One-command local run:  docker compose up
+#  Starts MongoDB + the Express API + the Vite dev server together.
+#  No accounts, no database install. Then open http://localhost:5173
+#  Admin login (seeded):  admin@example.com  /  changeme123
+#
+#  These credentials & secrets are for LOCAL DEV ONLY. For real deployment
+#  use MongoDB Atlas + Render env vars (see README).
+# ─────────────────────────────────────────────────────────────────────────
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    ports:
+      - "27017:27017"          # exposed so you can inspect with Compass, etc.
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  api:
+    image: node:20-alpine
+    working_dir: /app
+    # install deps, seed the admin + sample projects (idempotent), then run
+    command: sh -c "npm install && npm run seed && npm run dev"
+    restart: unless-stopped
+    ports:
+      - "5001:5000"
+    environment:
+      NODE_ENV: development
+      PORT: "5000"
+      MONGO_URI: mongodb://mongo:27017/portfolio
+      JWT_SECRET: dev-only-secret-change-me
+      JWT_EXPIRES_IN: 7d
+      ADMIN_NAME: Pradumn Saindane
+      ADMIN_EMAIL: admin@example.com
+      ADMIN_PASSWORD: changeme123
+      CLIENT_URL: http://localhost:5173
+    volumes:
+      - ./server:/app
+      - /app/node_modules       # keep container deps out of your host folder
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+  web:
+    image: node:20-alpine
+    working_dir: /app
+    # --host makes Vite reachable from your browser on the host machine
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+    restart: unless-stopped
+    ports:
+      - "5173:5173"
+    environment:
+      # The browser (on your host) calls the API directly at localhost:5000.
+      VITE_API_URL: http://localhost:5001/api
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    depends_on:
+      - api
+
+volumes:
+  mongo-data:

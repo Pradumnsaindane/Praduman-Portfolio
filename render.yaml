@@ -1,0 +1,30 @@
+# Render Blueprint — deploys the Express API as a Web Service.
+# In Render: New → Blueprint → point at this repo. It reads this file.
+# Secrets marked `sync: false` are entered in the Render dashboard (never committed).
+services:
+  - type: web
+    name: pradumn-portfolio-api
+    runtime: node
+    rootDir: server
+    plan: free
+    buildCommand: npm install
+    startCommand: node server.js
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: JWT_SECRET
+        generateValue: true      # Render generates a strong secret for you
+      - key: MONGO_URI
+        sync: false              # your MongoDB Atlas connection string
+      - key: CLIENT_URL
+        sync: false              # your Vercel URL, e.g. https://pradumn.vercel.app
+      - key: ADMIN_NAME
+        sync: false
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
