@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { ArrowUpRight, Command, Download, Moon, Sun, X } from 'lucide-react';
+import { ArrowUpRight, Command, Download, Moon, Sun, Close as X } from './Icons.jsx';
 import { portfolio } from '../data/portfolio.js';
 import profileImg from '../assets/Pofilepicture.jpeg';
 
