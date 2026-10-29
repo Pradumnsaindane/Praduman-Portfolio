@@ -39,6 +39,8 @@ export const Linkedin = (p) =>
   wrap(<><rect x="3" y="3" width="18" height="18" rx="2" /><path d="M8 11v5M8 8v.01M12 16v-3a2 2 0 0 1 4 0v3M12 16v-5" /></>, p);
 export const Mail = (p) => wrap(<><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3 7 9 6 9-6" /></>, p);
 export const Link = (p) => wrap(<path d="M9 15l6-6M10 6l1-1a4 4 0 0 1 6 6l-1 1M14 18l-1 1a4 4 0 0 1-6-6l1-1" />, p);
+export const Command = (p) => wrap(<><path d="M18 8a3 3 0 1 0-3-3v14a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V5a3 3 0 1 0-3 3h12Z" /></>, p);
+export const Download = (p) => wrap(<><path d="M12 3v12M7 10l5 5 5-5M5 21h14" /></>, p);
 
-const Icons = { Sun, Moon, Menu, Close, ArrowRight, ArrowUpRight, ArrowUp, Github, Linkedin, Mail, Link };
+const Icons = { Sun, Moon, Menu, Close, ArrowRight, ArrowUpRight, ArrowUp, Github, Linkedin, Mail, Link, Command, Download };
 export default Icons;
