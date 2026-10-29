@@ -242,3 +242,28 @@ Back on Render, set `CLIENT_URL` to your Vercel URL (comma-separate if you have 
 ---
 
 Built with the MERN stack. Set in Fraunces, Hanken Grotesk, and JetBrains Mono.
+
+## Cinematic homepage handoff
+
+Run locally with `npm run dev` (or `npm run build` for the client production build). The public homepage is now one pinned, scroll-driven scene in `client/src/components/CinematicPortfolio.jsx`; project cards still come from `GET /api/projects` and fall back to `site.js`.
+
+### Timeline map
+
+- `0.00–0.18` — hero hold and intro exit
+- `0.15–0.35` — subject push-in and foreground split
+- `0.25–0.44` — approach narrative
+- `0.48–0.69` — practice narrative
+- `0.74–1.00` — selected-work rail and CTA
+
+### Asset manifest
+
+| Layer | Source | Role | Anchor / depth |
+|---|---|---|---|
+| 00 | CSS radial plate | sky/background | center / far |
+| 10 | CSS polygon horizon | distant landscape | bottom / far-mid |
+| 20 | CSS perspective grid | environment texture | bottom / mid |
+| 30 | `client/src/assets/Pofilepicture.jpeg` | focal subject | center / near |
+| 40/41 | CSS window occluders | split foreground | left/right / nearest |
+| 50 | CSS shade | tint and focus transition | full canvas / overlay |
+
+No production image layers are missing for the current art direction; the atmospheric environment is intentionally generated in CSS so the supplied portrait remains the only photographic asset. Reduced motion removes the long scroll choreography while keeping all narratives and project controls available.
