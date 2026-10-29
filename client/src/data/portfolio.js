@@ -1,0 +1,25 @@
+export const portfolio = {
+  name: 'Pradumn Bharat Saindane',
+  role: 'Full-Stack Developer & AI Engineer',
+  title: 'Software Engineer',
+  location: 'Pune, Maharashtra, India',
+  timezone: 'Asia/Kolkata',
+  availability: { isOpen: true, label: 'Open to SDE internships' },
+  pitch: 'I build full-stack web applications, AI-powered products, and scalable software experiences that solve real-world problems.',
+  bio: "I'm Pradumn Bharat Saindane, a software engineer and developer from Pune, India, pursuing a B.Tech in Information Technology at DY Patil College of Engineering. I build full-stack applications, AI-driven solutions, and digital products with a focus on functionality, usability, and scalable architecture.",
+  skills: {
+    frontend: ['HTML5', 'CSS3', 'JavaScript', 'React', 'Next.js', 'Tailwind CSS', 'Vite'],
+    backend: ['Node.js', 'Express.js', 'Python', 'Flask', 'Java', 'REST APIs'],
+    databases: ['PostgreSQL', 'MySQL', 'Supabase', 'Neon PostgreSQL', 'AWS', 'Terraform'],
+    tools: ['Git', 'GitHub', 'VS Code', 'npm', 'Vercel', 'GitHub Actions', 'Docker'],
+    ai: ['AI / LLM API integration', 'OpenAI Python SDK', 'Scikit-learn'],
+  },
+  projects: [
+    { slug: 'commun', title: 'Commun', kind: 'Developer Community Platform', summary: 'A platform for discovering opportunities, connecting with communities, sharing content, and growing technical careers.', tags: ['Next.js', 'React', 'Supabase', 'PostgreSQL'], status: 'Live', live: 'https://commun-nine.vercel.app/', repo: 'https://github.com/Pradumnsaindane/Commun.git', detail: 'Authentication, onboarding, profiles, discovery, posts, social interactions, notifications, moderation, and protected application routes.' },
+    { slug: 'look-through', title: 'Look Through', kind: 'Digital Product Experience', summary: 'A branded product experience with a story-led landing page, dashboard, theme switching, and a clear modern interface.', tags: ['React', 'PostgreSQL', 'Neon Auth', 'Theme switching'], status: 'Live', live: 'https://look-through.vercel.app', detail: 'Dashboard data loading, session-based organization authorization, authentication configuration, and interface branding.' },
+    { slug: 'ai-model-generator', title: 'AI Model Generator', kind: 'AI Application', summary: 'An application architecture exploring provider integration and configurable model-related outputs.', tags: ['Python', 'OpenAI SDK', 'API integration'], status: 'In progress', detail: 'A dedicated provider module and configurable application settings.' },
+    { slug: 'employee-performance-ai', title: 'Employee Performance AI', kind: 'ML Application', summary: 'A synthetic-data ML workflow pairing a Decision Tree model with a Flask inference API.', tags: ['Python', 'Flask', 'Scikit-learn'], status: 'Repo only', detail: 'Clearly labeled synthetic dataset, model inference integration, and backend API development.' },
+    { slug: 'queueless', title: 'QueueLess', kind: 'Queue Management Project', summary: 'A queue-management project exploring how software can reduce friction in service workflows.', tags: ['Software design', 'Workflow'], status: 'Repo only', repo: 'https://github.com/Pradumnsaindane/QueueLess.git', detail: 'Project scope and functionality are intentionally kept minimal until verified from the repository.' },
+  ],
+  links: { github: 'https://github.com/Pradumnsaindane', x: 'https://x.com/pradumncodes7', leetcode: 'https://leetcode.com/u/Pradum_saindane/', hackerrank: 'https://www.hackerrank.com/profile/psaindane09' },
+};

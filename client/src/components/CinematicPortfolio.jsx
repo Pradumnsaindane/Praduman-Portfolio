@@ -1,143 +1,46 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import site from '../data/site.js';
+import { ArrowUpRight, Command, Download, Github, Moon, Sun, X } from 'lucide-react';
+import { portfolio } from '../data/portfolio.js';
 import profileImg from '../assets/Pofilepicture.jpeg';
 
-const SCENES = {
-  introOut: [0.03, 0.18],
-  reveal: [0.15, 0.35],
-  storyA: [0.25, 0.44],
-  storyB: [0.48, 0.69],
-  catalog: [0.74, 1],
-};
+const navItems = [['home', 'Home', '.tsx'], ['about', 'About', '.md'], ['projects', 'Projects', '/'], ['skills', '.json', ''], ['experience', 'Experience', '.log'], ['contact', 'Contact', '.sh']];
+const allSkills = Object.entries(portfolio.skills);
 
-const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value));
-const lerp = (a, b, t) => a + (b - a) * t;
-const smoothstep = (value) => value * value * (3 - 2 * value);
-const rangeProgress = (value, [start, end]) => clamp((value - start) / (end - start));
-const segmentInOut = (value, [start, end], fade = 0.18) => {
-  const progress = rangeProgress(value, [start, end]);
-  const enter = smoothstep(clamp(progress / fade));
-  const exit = smoothstep(clamp((1 - progress) / fade));
-  return enter * exit;
-};
+function SectionLabel({ children, index }) { return <div className="term-label">// {String(index).padStart(2, '0')} / {children}<span className="term-caret" aria-hidden="true">_</span></div>; }
+function Window({ path, status, children, className = '' }) { return <div className={`term-window ${className}`}><div className="term-window__bar"><span className="term-dots"><i /><i /><i /></span><span>{path}</span>{status && <span className="term-status">{status}</span>}</div>{children}</div>; }
 
-function useTimeline(sectionRef) {
-  const [progress, setProgress] = useState(0);
-  const target = useRef(0);
-  const frame = useRef(0);
-  const reduced = useRef(false);
+export default function CinematicPortfolio() {
+  const [theme, setTheme] = useState('dark');
+  const [palette, setPalette] = useState(false);
+  const [recruiter, setRecruiter] = useState(() => window.location.hash === '#recruiter');
+  const [query, setQuery] = useState('');
+  const [active, setActive] = useState('home');
+  const paletteRef = useRef(null);
+  const projects = useMemo(() => portfolio.projects, []);
 
+  useEffect(() => { document.documentElement.dataset.terminalTheme = theme; }, [theme]);
   useEffect(() => {
-    reduced.current = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const request = () => {
-      if (!frame.current) frame.current = requestAnimationFrame(render);
-    };
-    const render = () => {
-      frame.current = 0;
-      const section = sectionRef.current;
-      if (!section) return;
-      const max = Math.max(1, section.offsetHeight - window.innerHeight);
-      target.current = clamp((window.scrollY - section.offsetTop) / max);
-      setProgress((current) => {
-        const next = reduced.current ? target.current : lerp(current, target.current, 0.12);
-        if (Math.abs(next - target.current) > 0.001) request();
-        return next;
-      });
-    };
-    const onScroll = () => request();
-    const onResize = () => request();
-    request();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onResize, { passive: true });
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onResize);
-      if (frame.current) cancelAnimationFrame(frame.current);
-    };
-  }, [sectionRef]);
-
-  return progress;
+    const onKey = (event) => { if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') { event.preventDefault(); setPalette(true); } if (event.key === 'Escape') setPalette(false); };
+    const onHash = () => setRecruiter(window.location.hash === '#recruiter');
+    window.addEventListener('keydown', onKey); window.addEventListener('hashchange', onHash);
+    return () => { window.removeEventListener('keydown', onKey); window.removeEventListener('hashchange', onHash); };
+  }, []);
+  useEffect(() => { if (palette) paletteRef.current?.querySelector('input')?.focus(); }, [palette]);
+  const go = (id) => { setRecruiter(false); setActive(id); document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }); setPalette(false); };
+  const commands = [...navItems.map(([id, label]) => ({ label: `Go to ${label.replace('.', '')}`, action: () => go(id) })), { label: 'Recruiter view', action: () => { window.location.hash = 'recruiter'; setPalette(false); } }, { label: 'Toggle theme', action: () => setTheme(theme === 'dark' ? 'light' : 'dark') }].filter((item) => item.label.toLowerCase().includes(query.toLowerCase()));
+  if (recruiter) return <RecruiterView onBack={() => { window.location.hash = ''; setRecruiter(false); }} />;
+  return <main className="terminal-site">
+    <a className="skip-link" href="#projects">Skip to projects</a>
+    <header className="term-nav"><a className="term-brand" href="#home" onClick={(e) => { e.preventDefault(); go('home'); }}>[PS]</a><nav aria-label="Primary navigation">{navItems.map(([id, label, suffix], index) => <a key={id} className={active === id ? 'is-active' : ''} href={`#${id}`} onClick={(e) => { e.preventDefault(); go(id); }}>{label}<small>{suffix}</small></a>)}</nav><div className="term-actions"><button className="kbd" onClick={() => setPalette(true)}><Command size={14} /> K</button><button className="term-icon" aria-label="Toggle theme" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>{theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}</button><a className="term-cta" href="#contact" onClick={(e) => { e.preventDefault(); go('contact'); }}>Contact</a></div></header>
+    <section id="home" className="term-hero"><div className="term-grid" aria-hidden="true" /><div className="term-hero__copy"><SectionLabel index="00">boot</SectionLabel><p className="term-statusline"><span className="status-dot" /> available / {portfolio.location}</p><h1>{portfolio.name}</h1><p className="term-role"><span>const role = </span>{portfolio.role} <i>;</i></p><p className="term-pitch">{portfolio.pitch}</p><div className="term-buttons"><button className="term-button primary" onClick={() => go('projects')}>View projects <ArrowUpRight size={16} /></button><a className="term-button" href="/assets/Pradumn-Bharat-Saindane-Resume.pdf"><Download size={15} /> Resume</a></div></div><Window path="~/portfolio/developer.ts" status="ready" className="term-code"><pre><code><span className="syn-key">const</span> developer <span className="syn-punc">=</span> {'{'}{`\n`}  <span className="syn-key">name</span>: <span className="syn-str">&quot;{portfolio.name}&quot;</span>,{`\n`}  <span className="syn-key">focus</span>: [<span className="syn-str">&quot;Next.js&quot;</span>, <span className="syn-str">&quot;Node.js&quot;</span>,{`\n`}    <span className="syn-str">&quot;PostgreSQL&quot;</span>, <span className="syn-str">&quot;AI&quot;</span>],{`\n`}  <span className="syn-key">openTo</span>: <span className="syn-str">&quot;SDE internships&quot;</span>{`\n`}{'}'};<span className="typing-caret" /></code></pre></Window><div className="term-scroll">scroll to explore <span>↓</span></div></section>
+    <section id="about" className="term-section about-section"><div><SectionLabel index="01">about.md</SectionLabel><h2>A practical engineer with a systems view.</h2></div><Window path="~/portfolio/README.md" status="read" className="readme-window"><div className="readme-grid"><div className="line-nos">01<br/>02<br/>03<br/>04<br/>05<br/>06</div><div><p className="lead">{portfolio.bio}</p><p>My technical interests include React, Next.js, Node.js, PostgreSQL, Java, and AI integration. I care about useful products, clear interfaces, and architecture that can grow without losing its shape.</p></div></div></Window><div className="about-aside"><img src={profileImg} alt="Portrait of Pradumn Bharat Saindane" /><div><strong>{projects.length}</strong><span>projects documented</span></div><div><strong>{allSkills.flatMap(([, list]) => list).length}</strong><span>technologies explored</span></div></div></section>
+    <section id="skills" className="term-section skills-section"><SectionLabel index="02">skills.json</SectionLabel><div className="skills-layout"><div><h2>Tools for the whole path.</h2><p>From interface to inference, I work across the layers that make a product feel coherent.</p></div><div className="skills-stack">{allSkills.map(([category, list]) => <Window key={category} path={`dependencies/${category}.json`}><div className="skill-list">{list.map((skill) => <span key={skill}><i className="skill-dot" />{skill}</span>)}</div></Window>)}</div></div></section>
+    <section id="projects" className="term-section projects-section"><div className="projects-heading"><div><SectionLabel index="03">projects/</SectionLabel><h2>Selected work.</h2></div><span className="project-count">{String(projects.length).padStart(2, '0')} projects / verified data</span></div><div className="project-list">{projects.map((project, index) => <Window key={project.slug} path={`~/projects/${project.slug}`} status={project.status} className="project-window"><div className="project-index">{String(index + 1).padStart(2, '0')}</div><div className="project-copy"><p className="project-kind">{project.kind}</p><h3>{project.title}</h3><p>{project.summary}</p><div className="tags">{project.tags.map((tag) => <span key={tag}>{tag}</span>)}</div><p className="project-detail">{project.detail}</p><div className="project-links">{project.live && <a href={project.live} target="_blank" rel="noreferrer">Live <ArrowUpRight size={14} /></a>}{project.repo && <a href={project.repo} target="_blank" rel="noreferrer"><Github size={14} /> Repo</a>}</div></div><div className="generated-cover"><span>{project.title}</span><div className="cover-lines" /></div></Window>)}</div></section>
+    <section id="experience" className="term-section experience-section"><SectionLabel index="04">git log</SectionLabel><h2>Growing through practice.</h2><div className="git-log"><div className="git-line" />{[['now', 'Independent Developer', 'Full-stack applications, AI-driven projects, and digital products.'], ['current', 'B.Tech in Information Technology', 'DY Patil College of Engineering, Pune.'], ['ongoing', 'Commun.dev', 'A Pune-based initiative focused on technical training, mentorship, and career guidance.']].map(([date, title, copy], i) => <article key={title}><span className="git-node" /> <code>{date}</code><div><h3>{title}</h3><p>{copy}</p></div></article>)}</div></section>
+    <section id="contact" className="term-section contact-section"><SectionLabel index="05">contact.sh</SectionLabel><h2>Let&apos;s build something useful.</h2><p>Open to software engineering internships, full-stack opportunities, and thoughtful collaborations.</p><div className="contact-links"><a className="term-button primary" href="mailto:hello@pradumn.dev">Start a conversation <ArrowUpRight size={16} /></a>{Object.entries(portfolio.links).map(([name, url]) => <a key={name} href={url} target="_blank" rel="noreferrer">{name} <ArrowUpRight size={14} /></a>)}</div></section>
+    <footer className="term-footer"><span>git branch: main</span><span><span className="status-dot" /> {portfolio.availability.label}</span><span>© {new Date().getFullYear()} PS</span></footer>
+    {palette && <div className="palette-backdrop" onMouseDown={(e) => e.target === e.currentTarget && setPalette(false)}><div className="command-palette" role="dialog" aria-modal="true" aria-label="Command palette" ref={paletteRef}><div className="palette-head"><Command size={16} /><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Type a command..." aria-label="Search commands" /><button onClick={() => setPalette(false)} aria-label="Close command palette"><X size={16} /></button></div><div className="palette-list">{commands.map((item) => <button key={item.label} onClick={item.action}>{item.label}<span>↵</span></button>)}</div></div></div>}
+  </main>;
 }
 
-function Narrative({ className, eyebrow, title, body, visible }) {
-  return (
-    <article className={`cinematic-copy ${className} ${visible > 0.02 ? 'is-visible' : ''}`} style={{ '--copy-progress': visible }}>
-      <span className="cinematic-copy__eyebrow">{eyebrow}</span>
-      <h2>{title}</h2>
-      <p>{body}</p>
-    </article>
-  );
-}
-
-export default function CinematicPortfolio({ projects = [] }) {
-  const sectionRef = useRef(null);
-  const progress = useTimeline(sectionRef);
-  const [activeCard, setActiveCard] = useState(0);
-  const cards = useMemo(() => projects.length ? projects : site.fallbackProjects, [projects]);
-  const intro = 1 - smoothstep(rangeProgress(progress, SCENES.introOut));
-  const reveal = smoothstep(rangeProgress(progress, SCENES.reveal));
-  const storyA = segmentInOut(progress, SCENES.storyA);
-  const storyB = segmentInOut(progress, SCENES.storyB);
-  const catalog = smoothstep(rangeProgress(progress, SCENES.catalog));
-
-  const jump = (target) => {
-    const section = sectionRef.current;
-    if (!section) return;
-    const max = section.offsetHeight - window.innerHeight;
-    const positions = { work: 0.85, about: 0.58, contact: 1 };
-    window.scrollTo({ top: section.offsetTop + max * (positions[target] ?? 0), behavior: 'smooth' });
-  };
-
-  return (
-    <main className="cinematic-site">
-      <a className="skip-link" href="#cinematic-work">Skip to selected work</a>
-      <section className="cinematic-scroll" ref={sectionRef} id="top" aria-label="Pradumn Saindane portfolio">
-        <div className="cinematic-stage">
-          <div className="cinematic-world" aria-hidden="true">
-            <div className="world-sky" style={{ transform: `scale(${1 + reveal * 0.06}) translate3d(0, ${reveal * -1.5}%, 0)` }} />
-            <div className="world-horizon" style={{ transform: `translate3d(${reveal * -2}%, ${reveal * 1.5}%, 0) scale(${1 + reveal * 0.08})` }} />
-            <div className="world-grid" style={{ opacity: 0.22 + reveal * 0.2 }} />
-            <div className="world-window world-window--left" style={{ transform: `translate3d(${-reveal * 30}%, ${reveal * 2}%, 0)` }} />
-            <div className="world-window world-window--right" style={{ transform: `translate3d(${reveal * 30}%, ${reveal * 2}%, 0)` }} />
-            <div className="world-subject" style={{ transform: `translate3d(0, ${reveal * -3}%, 0) scale(${1 + reveal * 0.2})`, opacity: 0.38 + reveal * 0.62 }}>
-              <img src={profileImg} alt="" width="900" height="900" />
-            </div>
-            <div className="world-shade" style={{ opacity: intro * 0.3 + storyB * 0.22 }} />
-          </div>
-
-          <header className="cinematic-nav">
-            <a className="cinematic-brand" href="#top">PS<span>.</span></a>
-            <nav aria-label="Primary navigation">
-              <button type="button" onClick={() => jump('about')}>About</button>
-              <button type="button" onClick={() => jump('work')}>Work</button>
-              <button type="button" onClick={() => jump('contact')}>Contact</button>
-            </nav>
-            <span className="cinematic-progress">{String(Math.round(progress * 100)).padStart(2, '0')} / 100</span>
-          </header>
-
-          <div className="cinematic-intro" style={{ opacity: intro, transform: `translate3d(0, ${intro * 0}px, 0)` }}>
-            <p className="cinematic-kicker">Software engineer / Pune, India</p>
-            <h1>Building digital products with <em>clarity.</em></h1>
-            <p className="cinematic-intro__body">{site.hero.blurb}</p>
-            <button className="cinematic-cta" type="button" onClick={() => jump('work')}>Explore the work <span>↘</span></button>
-          </div>
-
-          <Narrative className="cinematic-copy--a" eyebrow="01 — The approach" title="Make the complex feel obvious." body="From data models to the final interaction, I care about the whole path a feature takes. Good software should feel calm on the surface." visible={storyA} />
-          <Narrative className="cinematic-copy--b" eyebrow="02 — The practice" title="Small, considered systems." body="I work across the stack to ship useful things: readable code, tight feedback loops, and interfaces that respect the person using them." visible={storyB} />
-
-          <section className="cinematic-catalog" id="cinematic-work" style={{ opacity: catalog, transform: `translate3d(${(1 - catalog) * 8}%, 0, 0)` }} aria-label="Selected work">
-            <div className="catalog-heading">
-              <div><span className="cinematic-kicker">Selected work</span><h2>Things I&apos;ve built.</h2></div>
-              <div className="catalog-controls"><button type="button" aria-label="Previous project" onClick={() => setActiveCard((activeCard - 1 + cards.length) % cards.length)}>←</button><span>{String(activeCard + 1).padStart(2, '0')} / {String(cards.length).padStart(2, '0')}</span><button type="button" aria-label="Next project" onClick={() => setActiveCard((activeCard + 1) % cards.length)}>→</button></div>
-            </div>
-            <div className="catalog-rail" role="list">
-              {cards.map((project, index) => <article className={`catalog-card ${index === activeCard ? 'is-active' : ''}`} key={project._id || project.title} role="listitem"><span className="catalog-card__index">{String(index + 1).padStart(2, '0')}</span><h3>{project.title}</h3><p>{project.summary}</p><div className="catalog-card__meta">{project.tech?.slice(0, 3).join(' · ')}</div></article>)}
-            </div>
-            <p className="catalog-footer"><span>Available for thoughtful collaborations</span><a href={`mailto:${site.email}`}>Start a conversation ↗</a></p>
-          </section>
-        </div>
-      </section>
-      <section className="cinematic-after" id="about"><span className="cinematic-kicker">A little more</span><h2>Useful things, made with intention.</h2><p>{site.about[0]}</p><a href={`mailto:${site.email}`} id="contact">{site.email} ↗</a></section>
-    </main>
-  );
-}
+function RecruiterView({ onBack }) { return <main className="recruiter-view"><button className="recruiter-back" onClick={onBack}>← Back to full experience</button><SectionLabel index="00">recruiter.md</SectionLabel><h1>{portfolio.name}</h1><p className="recruiter-role">{portfolio.role} / {portfolio.title}</p><p className="recruiter-pitch">{portfolio.pitch}</p><div className="recruiter-grid"><div><h2>Projects</h2>{portfolio.projects.slice(0, 3).map((project) => <article key={project.slug}><h3>{project.title}</h3><p>{project.summary}</p><small>{project.tags.join(' · ')}</small></article>)}</div><div><h2>Skills</h2>{allSkills.map(([category, list]) => <p key={category}><strong>{category}</strong><br />{list.join(' · ')}</p>)}<h2>Education</h2><p>B.Tech in Information Technology<br />DY Patil College of Engineering, Pune</p></div></div><a className="term-button primary" href="mailto:hello@pradumn.dev">Contact Pradumn <ArrowUpRight size={16} /></a></main>; }
