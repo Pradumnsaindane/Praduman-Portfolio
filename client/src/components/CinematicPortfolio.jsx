@@ -1,46 +1,112 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { ArrowUpRight, Command, Download, Moon, Sun, Close as X } from './Icons.jsx';
-import { portfolio } from '../data/portfolio.js';
-import profileImg from '../assets/Pofilepicture.jpeg';
+import { ArrowUpRight, Download } from './Icons.jsx';
 
-const navItems = [['home', 'Home', '.tsx'], ['about', 'About', '.md'], ['projects', 'Projects', '/'], ['skills', '.json', ''], ['experience', 'Experience', '.log'], ['contact', 'Contact', '.sh']];
-const allSkills = Object.entries(portfolio.skills);
+const CHARSET = ' ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.:/+!?-&';
+const scenes = [
+  { label: 'PORTFOLIO', text: <>Hi, I&apos;m Debbie, a <em>UX designer</em>.</> },
+  { label: 'TODAY', text: <>Today is a good day to <em>build</em> something.</> },
+  { label: 'UX + UI', text: <>I shape how products <em>feel</em>, not just how they look.</> },
+  { label: 'RESEARCH', text: <>I start with <em>people</em>, not pixels.</> },
+  { label: 'FLOWS', text: <>Untangling the messy <em>middle</em> of every journey.</> },
+  { label: 'SYSTEMS', text: <>Design systems that <em>scale</em> with your team.</> },
+  { label: 'SHIP IT!', text: <>Then I make sure it <em>ships</em>.</> },
+  { label: 'HIRE ME?', text: <>Open to new projects, <em>let&apos;s talk</em>.</> },
+];
 
-function SectionLabel({ children, index }) { return <div className="term-label">// {String(index).padStart(2, '0')} / {children}<span className="term-caret" aria-hidden="true">_</span></div>; }
-function Window({ path, status, children, className = '' }) { return <div className={`term-window ${className}`}><div className="term-window__bar"><span className="term-dots"><i /><i /><i /></span><span>{path}</span>{status && <span className="term-status">{status}</span>}</div>{children}</div>; }
-
-export default function CinematicPortfolio() {
-  const [theme, setTheme] = useState('dark');
-  const [palette, setPalette] = useState(false);
-  const [recruiter, setRecruiter] = useState(() => window.location.hash === '#recruiter');
-  const [query, setQuery] = useState('');
-  const [active, setActive] = useState('home');
-  const paletteRef = useRef(null);
-  const projects = useMemo(() => portfolio.projects, []);
-
-  useEffect(() => { document.documentElement.dataset.terminalTheme = theme; }, [theme]);
-  useEffect(() => {
-    const onKey = (event) => { if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') { event.preventDefault(); setPalette(true); } if (event.key === 'Escape') setPalette(false); };
-    const onHash = () => setRecruiter(window.location.hash === '#recruiter');
-    window.addEventListener('keydown', onKey); window.addEventListener('hashchange', onHash);
-    return () => { window.removeEventListener('keydown', onKey); window.removeEventListener('hashchange', onHash); };
-  }, []);
-  useEffect(() => { if (palette) paletteRef.current?.querySelector('input')?.focus(); }, [palette]);
-  const go = (id) => { setRecruiter(false); setActive(id); document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }); setPalette(false); };
-  const commands = [...navItems.map(([id, label]) => ({ label: `Go to ${label.replace('.', '')}`, action: () => go(id) })), { label: 'Recruiter view', action: () => { window.location.hash = 'recruiter'; setPalette(false); } }, { label: 'Toggle theme', action: () => setTheme(theme === 'dark' ? 'light' : 'dark') }].filter((item) => item.label.toLowerCase().includes(query.toLowerCase()));
-  if (recruiter) return <RecruiterView onBack={() => { window.location.hash = ''; setRecruiter(false); }} />;
-  return <main className="terminal-site">
-    <a className="skip-link" href="#projects">Skip to projects</a>
-    <header className="term-nav"><a className="term-brand" href="#home" onClick={(e) => { e.preventDefault(); go('home'); }}>[PS]</a><nav aria-label="Primary navigation">{navItems.map(([id, label, suffix], index) => <a key={id} className={active === id ? 'is-active' : ''} href={`#${id}`} onClick={(e) => { e.preventDefault(); go(id); }}>{label}<small>{suffix}</small></a>)}</nav><div className="term-actions"><button className="kbd" onClick={() => setPalette(true)}><Command size={14} /> K</button><button className="term-icon" aria-label="Toggle theme" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>{theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}</button><a className="term-cta" href="#contact" onClick={(e) => { e.preventDefault(); go('contact'); }}>Contact</a></div></header>
-    <section id="home" className="term-hero"><div className="term-grid" aria-hidden="true" /><div className="term-hero__copy"><SectionLabel index="00">boot</SectionLabel><p className="term-statusline"><span className="status-dot" /> available / {portfolio.location}</p><h1>{portfolio.name}</h1><p className="term-role"><span>const role = </span>{portfolio.role} <i>;</i></p><p className="term-pitch">{portfolio.pitch}</p><div className="term-buttons"><button className="term-button primary" onClick={() => go('projects')}>View projects <ArrowUpRight size={16} /></button><a className="term-button" href="/assets/Pradumn-Bharat-Saindane-Resume.pdf"><Download size={15} /> Resume</a></div></div><Window path="~/portfolio/developer.ts" status="ready" className="term-code"><pre><code><span className="syn-key">const</span> developer <span className="syn-punc">=</span> {'{'}{`\n`}  <span className="syn-key">name</span>: <span className="syn-str">&quot;{portfolio.name}&quot;</span>,{`\n`}  <span className="syn-key">focus</span>: [<span className="syn-str">&quot;Next.js&quot;</span>, <span className="syn-str">&quot;Node.js&quot;</span>,{`\n`}    <span className="syn-str">&quot;PostgreSQL&quot;</span>, <span className="syn-str">&quot;AI&quot;</span>],{`\n`}  <span className="syn-key">openTo</span>: <span className="syn-str">&quot;SDE internships&quot;</span>{`\n`}{'}'};<span className="typing-caret" /></code></pre></Window><div className="term-scroll">scroll to explore <span>↓</span></div></section>
-    <section id="about" className="term-section about-section"><div><SectionLabel index="01">about.md</SectionLabel><h2>A practical engineer with a systems view.</h2></div><Window path="~/portfolio/README.md" status="read" className="readme-window"><div className="readme-grid"><div className="line-nos">01<br/>02<br/>03<br/>04<br/>05<br/>06</div><div><p className="lead">{portfolio.bio}</p><p>My technical interests include React, Next.js, Node.js, PostgreSQL, Java, and AI integration. I care about useful products, clear interfaces, and architecture that can grow without losing its shape.</p></div></div></Window><div className="about-aside"><img src={profileImg} alt="Portrait of Pradumn Bharat Saindane" /><div><strong>{projects.length}</strong><span>projects documented</span></div><div><strong>{allSkills.flatMap(([, list]) => list).length}</strong><span>technologies explored</span></div></div></section>
-    <section id="skills" className="term-section skills-section"><SectionLabel index="02">skills.json</SectionLabel><div className="skills-layout"><div><h2>Tools for the whole path.</h2><p>From interface to inference, I work across the layers that make a product feel coherent.</p></div><div className="skills-stack">{allSkills.map(([category, list]) => <Window key={category} path={`dependencies/${category}.json`}><div className="skill-list">{list.map((skill) => <span key={skill}><i className="skill-dot" />{skill}</span>)}</div></Window>)}</div></div></section>
-    <section id="projects" className="term-section projects-section"><div className="projects-heading"><div><SectionLabel index="03">projects/</SectionLabel><h2>Selected work.</h2></div><span className="project-count">{String(projects.length).padStart(2, '0')} projects / verified data</span></div><div className="project-list">{projects.map((project, index) => <Window key={project.slug} path={`~/projects/${project.slug}`} status={project.status} className="project-window"><div className="project-index">{String(index + 1).padStart(2, '0')}</div><div className="project-copy"><p className="project-kind">{project.kind}</p><h3>{project.title}</h3><p>{project.summary}</p><div className="tags">{project.tags.map((tag) => <span key={tag}>{tag}</span>)}</div><p className="project-detail">{project.detail}</p><div className="project-links">{project.live && <a href={project.live} target="_blank" rel="noreferrer">Live <ArrowUpRight size={14} /></a>}{project.repo && <a href={project.repo} target="_blank" rel="noreferrer"><span className="repo-mark" aria-hidden="true">GH</span> Repo</a>}</div></div><div className="generated-cover"><span>{project.title}</span><div className="cover-lines" /></div></Window>)}</div></section>
-    <section id="experience" className="term-section experience-section"><SectionLabel index="04">git log</SectionLabel><h2>Growing through practice.</h2><div className="git-log"><div className="git-line" />{[['now', 'Independent Developer', 'Full-stack applications, AI-driven projects, and digital products.'], ['current', 'B.Tech in Information Technology', 'DY Patil College of Engineering, Pune.'], ['ongoing', 'Commun.dev', 'A Pune-based initiative focused on technical training, mentorship, and career guidance.']].map(([date, title, copy], i) => <article key={title}><span className="git-node" /> <code>{date}</code><div><h3>{title}</h3><p>{copy}</p></div></article>)}</div></section>
-    <section id="contact" className="term-section contact-section"><SectionLabel index="05">contact.sh</SectionLabel><h2>Let&apos;s build something useful.</h2><p>Open to software engineering internships, full-stack opportunities, and thoughtful collaborations.</p><div className="contact-links"><a className="term-button primary" href="mailto:hello@pradumn.dev">Start a conversation <ArrowUpRight size={16} /></a>{Object.entries(portfolio.links).map(([name, url]) => <a key={name} href={url} target="_blank" rel="noreferrer">{name} <ArrowUpRight size={14} /></a>)}</div></section>
-    <footer className="term-footer"><span>git branch: main</span><span><span className="status-dot" /> {portfolio.availability.label}</span><span>© {new Date().getFullYear()} PS</span></footer>
-    {palette && <div className="palette-backdrop" onMouseDown={(e) => e.target === e.currentTarget && setPalette(false)}><div className="command-palette" role="dialog" aria-modal="true" aria-label="Command palette" ref={paletteRef}><div className="palette-head"><Command size={16} /><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Type a command..." aria-label="Search commands" /><button onClick={() => setPalette(false)} aria-label="Close command palette"><X size={16} /></button></div><div className="palette-list">{commands.map((item) => <button key={item.label} onClick={item.action}>{item.label}<span>↵</span></button>)}</div></div></div>}
-  </main>;
+function today() {
+  return new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: '2-digit', year: '2-digit' }).format(new Date());
 }
 
-function RecruiterView({ onBack }) { return <main className="recruiter-view"><button className="recruiter-back" onClick={onBack}>← Back to full experience</button><SectionLabel index="00">recruiter.md</SectionLabel><h1>{portfolio.name}</h1><p className="recruiter-role">{portfolio.role} / {portfolio.title}</p><p className="recruiter-pitch">{portfolio.pitch}</p><div className="recruiter-grid"><div><h2>Projects</h2>{portfolio.projects.slice(0, 3).map((project) => <article key={project.slug}><h3>{project.title}</h3><p>{project.summary}</p><small>{project.tags.join(' · ')}</small></article>)}</div><div><h2>Skills</h2>{allSkills.map(([category, list]) => <p key={category}><strong>{category}</strong><br />{list.join(' · ')}</p>)}<h2>Education</h2><p>B.Tech in Information Technology<br />DY Patil College of Engineering, Pune</p></div></div><a className="term-button primary" href="mailto:hello@pradumn.dev">Contact Pradumn <ArrowUpRight size={16} /></a></main>; }
+function Drum({ value, index, onHover }) {
+  const target = value || ' ';
+  const charIndex = CHARSET.indexOf(target);
+  const faces = [-2, -1, 0, 1, 2, 3];
+  return <div className="odometer__drum" onMouseEnter={() => onHover(index)} aria-hidden="true">
+    <div className="odometer__faces">
+      {faces.map((offset) => <span key={offset} className={`odometer__face ${offset === 0 ? 'is-current' : ''}`} style={{ '--offset': offset, '--index': charIndex }}>{CHARSET[(charIndex + offset + CHARSET.length) % CHARSET.length]}</span>)}
+    </div>
+    <i className="odometer__shade" />
+  </div>;
+}
+
+export default function CinematicPortfolio() {
+  const [sceneIndex, setSceneIndex] = useState(0);
+  const [sound, setSound] = useState(false);
+  const [clock, setClock] = useState('00:00:00');
+  const [cardEjected, setCardEjected] = useState(false);
+  const [cursor, setCursor] = useState({ x: -100, y: -100, label: '' });
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+  const lastWheel = useRef(0);
+  const scene = scenes[sceneIndex];
+  const word = useMemo(() => scene.label.padEnd(9, ' ').slice(0, 9), [scene.label]);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setClock(new Date().toLocaleTimeString('en-GB', { hour12: false })), 1000);
+    return () => window.clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setSceneIndex((current) => (current + 1) % scenes.length), 3800);
+    return () => window.clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    const move = (event) => {
+      setCursor((current) => ({ ...current, x: event.clientX, y: event.clientY }));
+      const x = (event.clientX / window.innerWidth - 0.5) * 8;
+      const y = (event.clientY / window.innerHeight - 0.5) * -8;
+      setTilt({ x: y, y: x });
+    };
+    window.addEventListener('pointermove', move);
+    return () => window.removeEventListener('pointermove', move);
+  }, []);
+
+  const next = (direction = 1) => setSceneIndex((current) => (current + direction + scenes.length) % scenes.length);
+  const handleWheel = (event) => {
+    if (Date.now() - lastWheel.current < 650) return;
+    lastWheel.current = Date.now();
+    next(event.deltaY > 0 ? 1 : -1);
+  };
+
+  return <main className="debbie-site" style={{ '--tilt-x': `${tilt.x}deg`, '--tilt-y': `${tilt.y}deg` }}>
+    <div className="grain" aria-hidden="true" />
+    <header className="debbie-nav">
+      <a className="debbie-logo" href="#top">debbie<sup>®</sup></a>
+      <nav className="debbie-links" aria-label="Primary navigation">
+        {['Work', 'About', 'Process', 'Playground'].map((link, index) => <a key={link} href={`#${link.toLowerCase()}`}><span>{link}</span>{index === 0 && <sup>06</sup>}</a>)}
+      </nav>
+      <div className="debbie-actions">
+        <time className="live-clock" aria-label="Current time">{clock}</time>
+        <button className={`sound-toggle ${sound ? 'is-on' : ''}`} onClick={() => setSound(!sound)} aria-label="Toggle sound">Sound <i /><i /><i /></button>
+        <a href="#contact" className="talk-button"><b />Let&apos;s talk</a>
+      </div>
+    </header>
+
+    <section className="odometer-hero" id="top">
+      <h1 className="sr-only">Debbie, UX Designer</h1>
+      <div className="machine" onWheel={handleWheel} style={{ transform: `rotateX(var(--tilt-x)) rotateY(var(--tilt-y))` }}>
+        <div className="scene-plate"><span>NO. {String(sceneIndex + 1).padStart(3, '0')} / 008</span><strong>{scene.label}</strong></div>
+        <button className="odometer" onClick={() => next()} aria-label="Spin to next scene" aria-live="polite">
+          <div className="odometer__window">{word.split('').map((char, index) => <Drum key={`${sceneIndex}-${index}`} value={char} index={index} onHover={() => {}} />)}<div className="card-slot" onClick={(event) => { event.stopPropagation(); setCardEjected(!cardEjected); }}><div className={`debbie-card ${cardEjected ? 'is-ejected' : ''}`}><b>UX</b><span>DEBBIE / DESIGN DEPT.</span><i /></div></div></div>
+        </button>
+        <button className="pull-knob" onClick={() => { setSceneIndex(Math.floor(Math.random() * scenes.length)); setCardEjected(false); }} aria-label="Pull to choose a random scene"><span>PULL</span></button>
+        <p className="machine-caption">{scene.text}</p>
+      </div>
+      <div className="hero-hint">CLICK / SCROLL TO EXPLORE</div>
+    </section>
+
+    <footer className="bottom-rail">
+      <p>UX / PRODUCT DESIGNER · RESEARCH · INTERACTION · SYSTEMS</p>
+      <div className="progress-segments" aria-label="Scene progress">{scenes.map((item, index) => <i key={item.label} className={index <= sceneIndex ? 'is-filled' : ''} />)}</div>
+      <a href="#work">SCROLL TO EXPLORE <span>↓</span></a>
+    </footer>
+
+    <section className="portfolio-strip" id="work">
+      <div><span>SELECTED WORK</span><h2>Useful things, <em>made human.</em></h2></div>
+      <a href="#contact" className="strip-link">View case studies <ArrowUpRight size={16} /></a>
+    </section>
+    <section className="portfolio-strip portfolio-strip--cream" id="about"><div><span>ABOUT DEBBIE</span><h2>Good design starts by <em>listening.</em></h2></div><a className="strip-link" href="#contact">More about me <ArrowUpRight size={16} /></a></section>
+    <section className="portfolio-strip" id="contact"><div><span>HAVE A PROJECT?</span><h2>Let&apos;s make something <em>clear.</em></h2></div><div className="contact-actions"><a className="talk-button talk-button--light" href="mailto:hello@debbie.design">Say hello <ArrowUpRight size={16} /></a><a className="strip-link" href="#top"><Download size={15} /> CV / Resume</a></div></section>
+    <div className={`custom-cursor ${cursor.label ? 'is-active' : ''}`} style={{ transform: `translate3d(${cursor.x}px, ${cursor.y}px, 0)` }}>{cursor.label || 'SPIN'}</div>
+  </main>;
+}
