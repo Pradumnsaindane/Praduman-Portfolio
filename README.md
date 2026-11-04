@@ -267,3 +267,9 @@ Run locally with `npm run dev` (or `npm run build` for the client production bui
 | 50 | CSS shade | tint and focus transition | full canvas / overlay |
 
 No production image layers are missing for the current art direction; the atmospheric environment is intentionally generated in CSS so the supplied portrait remains the only photographic asset. Reduced motion removes the long scroll choreography while keeping all narratives and project controls available.
+
+## Standalone static portfolio
+
+The separate, dependency-free site in [`standalone-portfolio/`](./standalone-portfolio/) is published to GitHub Pages by `.github/workflows/deploy-standalone-pages.yml`. The main React app still requires its API and database and continues to use the Vercel/Render deployment described above.
+
+For the first Pages deployment, set **Settings → Pages → Build and deployment → Source** to **GitHub Actions**. After that, pushes to `main` that change `standalone-portfolio/` deploy it automatically.

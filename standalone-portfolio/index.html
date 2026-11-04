@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pradumn Bharat Saindane — Software Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,900&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ============ TOKENS ============ */
+:root{--red:#e3170a;--hi:#ff2a17;--shadow:#b80f05;--ink:#0d0d0d;--paper:#f3f1ec;--cream:#fff6ee;
+--ease:cubic-bezier(.22,1.28,.42,1);--h:clamp(46px,10.4vw,150px);--mx:50%;--my:40%;--rx:0deg;--ry:0deg;--sx:0px;--sy:0px;
+--mono:"JetBrains Mono",ui-monospace,monospace;--serif:"Instrument Serif",Georgia,serif;--arch:"Archivo",Arial,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{overflow-x:clip}
+body{background:var(--red);color:var(--cream);font-family:var(--mono);-webkit-font-smoothing:antialiased;
+background:radial-gradient(520px circle at var(--mx) var(--my),var(--hi),transparent 70%),linear-gradient(#e3170a 60%,#a50d04);background-attachment:fixed;background-color:var(--red)}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;opacity:.1;mix-blend-mode:multiply;z-index:50;
+background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+:focus-visible{outline:2px solid var(--ink);outline-offset:4px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.up{animation:rise .9s var(--ease) both;animation-delay:calc(var(--d,0)*90ms + 150ms)}
+@keyframes rise{from{opacity:0;transform:translateY(24px)}}
+/* ============ NAV ============ */
+nav{position:fixed;top:0;left:0;right:0;z-index:20;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:20px 28px;font-size:12px;text-transform:uppercase;letter-spacing:.08em}
+.logo{font:900 26px/1 var(--arch);font-stretch:90%;letter-spacing:-.04em;color:var(--ink);text-transform:none}
+.logo sup{font-size:10px;margin-left:2px}
+.links{display:flex;gap:30px}
+.roll{position:relative;display:block;overflow:hidden;height:1.3em;line-height:1.3em}
+.roll span{display:block;transition:transform .55s var(--ease)}
+.roll span+span{color:var(--ink)}
+.links a:hover .roll span,.links a:focus-visible .roll span{transform:translateY(-100%)}
+.links sup{font-size:8px;vertical-align:top;margin-left:2px}
+.right{display:flex;justify-content:flex-end;align-items:center;gap:22px}
+#clock{display:flex;align-items:center;gap:1px;--h:15px;color:var(--cream)}
+#clock .drum{width:calc(var(--h)*.7);height:calc(var(--h)*1.62);background:none;border:0}
+#clock .drum::after{display:none}#clock .face{color:var(--cream);font:500 calc(var(--h)*.9)/1 var(--mono)}
+#clock i{font-style:normal;font-size:12px}
+.sound{display:flex;align-items:center;gap:8px;text-transform:uppercase;letter-spacing:.08em;font-size:12px}
+.eq{display:flex;gap:2px;align-items:flex-end;height:12px}.eq b{width:2px;height:3px;background:var(--cream)}
+.sound[aria-pressed=true] .eq b{animation:eq .7s ease-in-out infinite alternate}
+.eq b:nth-child(2){animation-delay:.2s!important}.eq b:nth-child(3){animation-delay:.4s!important}
+@keyframes eq{to{height:12px}}
+.pill{display:flex;align-items:center;gap:8px;background:var(--ink);color:var(--cream);padding:10px 16px;border-radius:99px;text-transform:uppercase;letter-spacing:.08em;font-size:12px;transition:transform .5s var(--ease),background .3s,color .3s}
+.pill:hover{background:var(--cream);color:var(--ink);transform:scale(1.07)}
+.pill i{width:7px;height:7px;border-radius:50%;background:#2fd35f;animation:pulse 1.6s infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 5px #2fd35f44}}
+/* ============ MACHINE ============ */
+#hero{position:relative;min-height:100vh;min-height:100svh;display:grid;place-items:center;perspective:1400px;padding:90px 0 80px}
+.machine{display:flex;flex-direction:column;align-items:center;gap:calc(var(--h)*.22);transform:rotateX(var(--rx)) rotateY(var(--ry));transition:transform .25s ease-out;transform-style:flat}
+.plate{padding:8px 18px;border-radius:5px;background:linear-gradient(#2a2a2a,#050505);box-shadow:calc(var(--sx)*-1) calc(var(--sy)*-1 + 6px) 14px #0007,inset 0 1px #fff2;color:#ff3b2b;font-size:13px;letter-spacing:.2em;text-shadow:0 0 8px #ff2a17;overflow:hidden;min-width:170px;text-align:center}
+.plate span{display:block;animation:flip .6s var(--ease)}
+@keyframes flip{from{transform:translateY(120%)}}
+.counter{display:flex;align-items:center;cursor:none;border-radius:8px}
+.win{display:flex;background:#050505;padding:5px;border-radius:8px 0 0 8px;box-shadow:inset 0 3px 12px #000,0 12px 30px #0006}
+.drum{position:relative;width:calc(var(--h)*.74);height:calc(var(--h)*1.62);overflow:hidden;background:var(--paper)}
+.drum+.drum{border-left:1px solid #0007}
+.drum::after{content:"";position:absolute;inset:0;pointer-events:none;
+background:linear-gradient(90deg,#0004,transparent 14%,transparent 86%,#0004),linear-gradient(#000b,#0003 14%,#fff4 50%,#0003 86%,#000b)}
+.face{position:absolute;left:0;right:0;top:calc(var(--h)*.31);height:var(--h);display:grid;place-items:center;
+font:900 calc(var(--h)*.9)/1 var(--arch);font-stretch:90%;color:#111;white-space:pre;will-change:transform}
+.slot{position:relative;align-self:stretch;width:calc(var(--h)*1.5);background:linear-gradient(#1b1b1b,#000);border-radius:0 8px 8px 0;overflow:hidden;box-shadow:0 12px 30px #0006}
+.slot::before{content:"";position:absolute;left:0;right:0;top:0;height:22%;background:#000;z-index:3;box-shadow:0 4px 8px #000a}
+.card{position:absolute;left:12%;right:12%;top:30%;height:92%;border-radius:9px;background:linear-gradient(135deg,#f02a1a,#a80d03);transition:transform .7s var(--ease);padding:calc(var(--h)*.1);display:flex;flex-direction:column;justify-content:space-between;color:var(--cream);z-index:2;cursor:none;font-size:calc(var(--h)*.08)}
+.slot:hover .card{transform:translateY(-6%)}.card.out{transform:translateY(140%)!important}
+.chip{width:26%;aspect-ratio:1.3;border-radius:4px;background:linear-gradient(135deg,#f7d774,#b98a1f)}
+.ps{position:absolute;right:8%;top:30%;font:italic 900 calc(var(--h)*.42)/1 var(--arch);writing-mode:vertical-rl;transform:rotate(180deg)}
+.card small{font-size:inherit;letter-spacing:.1em;line-height:1.5}
+.knob{margin-top:calc(var(--h)*.05);display:flex;flex-direction:column;align-items:center;gap:6px;font-size:10px;letter-spacing:.2em;color:var(--ink);cursor:none}
+.knob i{width:calc(var(--h)*.5);height:calc(var(--h)*.5);border-radius:50%;background:radial-gradient(circle at 35% 30%,#666,#111 45%,#000);box-shadow:calc(var(--sx)*-1) calc(var(--sy)*-1 + 8px) 14px #0008;transition:transform .35s var(--ease)}
+.knob:active i{transform:scale(.88,.78)}
+.caption{font:400 clamp(24px,4vw,64px)/1.05 var(--serif);text-align:center;max-width:min(88vw,1100px);min-height:2.2em;color:var(--cream)}
+.caption i{color:var(--ink)}
+.w{display:inline-block;overflow:hidden;vertical-align:top;padding:0 .12em .12em}
+.w>span{display:inline-block;animation:word .9s var(--ease) both;animation-delay:calc(var(--i)*60ms)}
+@keyframes word{from{transform:translateY(110%)}}
+/* ============ RAIL ============ */
+.rail{position:absolute;bottom:0;left:0;right:0;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:20px 28px;font-size:11px;text-transform:uppercase;letter-spacing:.08em;z-index:20;color:var(--ink)}
+.segs{display:flex;gap:6px}.segs b{width:34px;height:2px;background:#0003;position:relative;overflow:hidden}
+.segs b.done{background:var(--ink)}.segs b.on::after{content:"";position:absolute;inset:0;background:var(--ink);transform-origin:left;animation:fill var(--cyc) linear forwards}
+@keyframes fill{from{transform:scaleX(0)}}
+.scroll{justify-self:end;display:flex;align-items:center;gap:10px;color:var(--ink);font-size:11px;text-transform:uppercase;letter-spacing:.08em}
+.scroll i{width:1px;height:34px;background:#0004;position:relative;overflow:hidden}
+.scroll i::after{content:"";position:absolute;left:0;width:1px;height:12px;background:var(--ink);animation:drop 1.8s ease-in-out infinite}
+@keyframes drop{from{top:-12px}to{top:34px}}
+/* ============ PANEL / CURSOR / TOAST ============ */
+#cur{position:fixed;left:0;top:0;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:var(--ink);z-index:60;pointer-events:none;display:none;place-items:center;color:var(--red);font-size:11px;letter-spacing:.1em;transition:width .35s var(--ease),height .35s var(--ease),margin .35s var(--ease)}
+#cur.show{display:grid}#cur.big{width:74px;height:74px;margin:-37px 0 0 -37px}
+#toast{position:fixed;bottom:70px;left:50%;transform:translate(-50%,20px);background:var(--ink);color:var(--cream);padding:10px 16px;border-radius:99px;font-size:12px;opacity:0;transition:.4s var(--ease);z-index:70;pointer-events:none;max-width:90vw;text-align:center}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+@media(hover:none){#cur{display:none!important}.counter,.card,.knob{cursor:pointer}}
+@media(max-width:900px){.links,.sound,#clock{display:none}nav,.rail{grid-template-columns:1fr auto}.rail .mid{display:none}.rail{grid-template-columns:1fr auto}}
+@media(max-width:560px){:root{--h:12.5vw}.slot{display:none}.win{border-radius:8px}nav,.rail{padding:16px}.rail .l{display:none}.scroll{justify-self:start}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.machine{transform:none}}
+/* ============ SINGLE-PAGE SECTIONS & NAV STATES ============ */
+:root{--nav:76px}
+a{color:inherit;text-decoration:none}
+#hero,.sec{scroll-margin-top:var(--nav)}
+nav{transition:background .4s}nav.stuck{background:linear-gradient(var(--red) 65%,#e3170a00)}
+.links a{position:relative;display:block;color:var(--cream)}
+.links a[aria-current=location],#mnav a[aria-current=location]{color:var(--ink)}
+.links a[aria-current=location]::after{content:"";position:absolute;left:0;right:0;bottom:-5px;height:2px;background:var(--ink)}
+.menu{display:none;width:40px;height:40px;flex-direction:column;justify-content:center;align-items:center;gap:6px}
+.menu span{width:22px;height:2px;background:var(--ink);transition:transform .4s var(--ease)}
+.menu[aria-expanded=true] span:first-child{transform:translateY(4px) rotate(45deg)}
+.menu[aria-expanded=true] span:last-child{transform:translateY(-4px) rotate(-45deg)}
+#mnav{position:fixed;inset:0;z-index:19;background:var(--red);padding:100px 28px 40px;display:flex;flex-direction:column;justify-content:center;gap:6px;overflow:auto}
+#mnav[hidden]{display:none}
+#mnav a{font:400 clamp(44px,13vw,72px)/1.1 var(--serif);color:var(--cream)}
+#mnav a:hover{color:var(--ink)}
+.sec{max-width:1240px;margin:0 auto;padding:clamp(72px,12vh,120px) 28px;min-height:60vh;min-height:60svh}
+#contact{min-height:85vh;min-height:85svh}
+.sec h2{font:400 clamp(48px,8vw,112px)/.95 var(--serif);margin-bottom:clamp(28px,5vw,56px)}
+.row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:12px 40px;padding:22px 0;border-top:1px solid #0d0d0d66}
+.row h3{font:900 clamp(20px,2.6vw,34px)/1.05 var(--arch);font-stretch:90%;color:var(--ink);text-transform:uppercase}
+.row p{font-size:14px;line-height:1.7;max-width:62ch}
+.row small{display:block;margin-top:8px;font-size:12px;letter-spacing:.04em}
+.lead{font:400 clamp(26px,3.6vw,52px)/1.15 var(--serif);max-width:24em}
+.mail{display:inline-block;margin-top:28px;font:400 clamp(26px,6vw,84px)/1.1 var(--serif);color:var(--ink);word-break:break-all;border-bottom:2px solid var(--ink)}
+#elsewhere{display:flex;flex-wrap:wrap;gap:12px 28px;margin-top:36px;font-size:12px;text-transform:uppercase;letter-spacing:.08em}
+#elsewhere a{border-bottom:1px solid currentColor}
+@media(max-width:900px){.menu{display:flex}}
+@media(max-width:700px){.row{grid-template-columns:1fr}.sec{padding-inline:16px}}
+@media(max-width:380px){.pill{padding:9px 12px;font-size:11px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media(pointer:coarse){.menu{width:44px;height:44px}.pill,.scroll{min-height:44px}.knob{min-width:44px}}
+</style>
+</head>
+<body>
+<h1 class="sr">Pradumn Bharat Saindane, Software Engineer and Full-Stack Developer</h1>
+
+<nav aria-label="Primary">
+  <a class="logo up" href="#hero" aria-label="pradumn, back to top">pradumn<sup>®</sup></a>
+  <div class="links up" style="--d:1">
+    <a href="#work"><span class="roll"><span>Work<sup>05</sup></span><span>Work<sup>05</sup></span></span></a>
+    <a href="#about"><span class="roll"><span>About</span><span>About</span></span></a>
+    <a href="#stack"><span class="roll"><span>Stack</span><span>Stack</span></span></a>
+    <a href="#experience"><span class="roll"><span>Experience</span><span>Experience</span></span></a>
+    <a href="#contact"><span class="roll"><span>Contact</span><span>Contact</span></span></a>
+  </div>
+  <div class="right up" style="--d:2">
+    <div id="clock" role="timer" aria-label="Local time"></div>
+    <button class="sound" id="sound" aria-pressed="false" aria-label="Toggle drum click sound"><span class="eq"><b></b><b></b><b></b></span>Sound</button>
+    <a class="pill" href="#contact" data-cur="HELLO"><i></i>Let's connect</a>
+    <button class="menu" id="menu" type="button" aria-expanded="false" aria-controls="mnav" aria-label="Open menu"><span></span><span></span></button>
+  </div>
+</nav>
+
+<main>
+<section id="hero" aria-label="Introduction">
+  <div class="machine" id="machine">
+    <div class="plate" id="plate" aria-hidden="true"></div>
+    <div class="counter">
+      <div class="win" id="win" role="button" tabindex="0" data-cur="SPIN" aria-label="Counter. Press to show the next scene."></div>
+      <div class="slot"><button class="card" id="card" data-cur="CV ↗" aria-label="Open résumé"><span class="chip"></span><span class="ps">PS</span><small>PRADUMN<br>SOFTWARE ENGINEERING.</small></button></div>
+    </div>
+    <button class="knob" id="knob" data-cur="PULL" aria-label="Pull to spin to a random scene"><i></i>PULL</button>
+    <p class="caption" id="caption" aria-live="polite"></p>
+  </div>
+  <div class="rail">
+  <span class="l up" style="--d:4">Software Engineering · Full Stack · AI · Product Development</span>
+  <div class="segs mid up" id="segs" style="--d:5"></div>
+  <a class="scroll up" href="#work" style="--d:6">Scroll to explore<i></i></a>
+  </div>
+</section>
+
+<section class="sec" id="work" aria-labelledby="h-work"><h2 id="h-work">Work</h2><div id="work-list"></div></section>
+<section class="sec" id="about" aria-labelledby="h-about"><h2 id="h-about">About</h2>
+  <p class="lead">Pradumn Bharat Saindane is a software engineer, full-stack developer and AI product builder in Pune, Maharashtra, India. He builds full-stack applications, AI-powered products and scalable digital experiences.</p></section>
+<section class="sec" id="stack" aria-labelledby="h-stack"><h2 id="h-stack">Stack</h2><div id="stack-list"></div></section>
+<section class="sec" id="experience" aria-labelledby="h-exp"><h2 id="h-exp">Experience</h2><div id="exp-list"></div></section>
+<section class="sec" id="contact" aria-labelledby="h-contact"><h2 id="h-contact">Contact</h2>
+  <p class="lead">Have an ambitious idea? Let's build it.</p><p><a class="mail" id="mail"></a></p><p id="elsewhere"></p></section>
+</main>
+
+<div id="mnav" role="dialog" aria-modal="true" aria-label="Site navigation" hidden>
+  <a href="#work">Work</a><a href="#about">About</a><a href="#stack">Stack</a><a href="#experience">Experience</a><a href="#contact">Contact</a>
+</div>
+<div id="cur" aria-hidden="true"></div>
+<div id="toast" role="status"></div>
+
+<script>
+/* ============ CONFIG ============ */
+const RESUME_URL   = "";  // TODO: paste your résumé link (PDF / Drive URL)
+const LINKEDIN_URL = "";  // TODO: paste your LinkedIn profile URL
+const CYCLE_MS = 3800;
+const ME = {name:"Pradumn Bharat Saindane",loc:"Pune, Maharashtra, India",email:"psaindane09@gmail.com",
+  links:[["GitHub","https://github.com/Pradumnsaindane"],["Portfolio","https://pradumn-saindane-portfolio.vercel.app"],
+  ["X","https://x.com/pradumncodes7"],["LeetCode","https://leetcode.com/u/Pradum_saindane/"],["HackerRank","https://www.hackerrank.com/profile/psaindane09"]]};
+const PROJECTS = [
+ ["COMMUN","A career-building platform for students, aspiring developers and professionals, focused on community, learning, networking, discovery and career development.","Next.js, React, Supabase, PostgreSQL, authentication"],
+ ["LOOK THROUGH","A product/dashboard experience focused on presenting information through a clean, modern interface.","Next.js, React, PostgreSQL, Neon Auth, server-side authorization"],
+ ["AI MODEL GENERATOR","An AI-focused application that generates model-related outputs through an API-driven architecture.","Python, Flask, OpenAI-compatible API, backend services"],
+ ["EMPLOYEE PERFORMANCE AI","An AI/ML project that analyzes employee performance using a machine learning prediction workflow.","Python, Flask, scikit-learn, Decision Tree, synthetic dataset"],
+ ["QUEUELESS","A queue-management project built for a hackathon, improving queue handling through a digital solution.","React, JavaScript"]];
+const STACK = [["Programming Languages","Java, JavaScript, Python, TypeScript"],["Frontend","HTML, CSS, React, Next.js, Tailwind CSS"],
+ ["Backend","Node.js, Express.js, Python, Flask, REST APIs"],["Databases","PostgreSQL, MySQL, MongoDB, Supabase"],
+ ["AI & Machine Learning","OpenAI API integration, LLM integration, scikit-learn fundamentals"],["Tools & Platforms","Git, GitHub, VS Code, Vercel"],
+ ["Cloud & DevOps","AWS fundamentals, Docker, Kubernetes fundamentals, CI/CD, GitHub Actions"]];
+const EXPERIENCE = []; // [{role, org, period, note}] — add real roles here
+/* 9 drums: labels are shortened to fit (the full 16-char "PRODUCT THINKING" cannot fit 9 drums) */
+const SCENES = [
+ ["PORTFOLIO","Hi, I'm Pradumn, a *software engineer*."],
+ ["FULLSTACK","I build complete products, from *frontend to backend*."],
+ ["AI BUILD","Exploring artificial intelligence to create *smarter products*."],
+ ["ENGINEER","Writing clean code and building *reliable systems*."],
+ ["PROJECTS","Turning ambitious ideas into *working products*."],
+ ["STACK","React, Next.js, Node.js, Python and *cloud technologies*."],
+ ["PRODUCT","I believe great software solves *real problems*."],
+ ["CONNECT","Have an ambitious idea? *Let's build it*."]];
+const CHARS = " ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.:/+!?-&";
+const DIGITS = "0123456789", N_DRUMS = 9;
+const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const $ = (s, r=document) => r.querySelector(s);
+const mod = (a, n) => ((a % n) + n) % n;
+
+/* ============ SOUND ============ */
+const Sound = {on:false, ctx:null,
+  click(){ if(!this.on) return; const c=this.ctx, n=c.sampleRate*.03, b=c.createBuffer(1,n,c.sampleRate), d=b.getChannelData(0);
+    for(let i=0;i<n;i++) d[i]=(Math.random()*2-1)*(1-i/n);
+    const s=c.createBufferSource(), f=c.createBiquadFilter(), g=c.createGain();
+    f.type="bandpass"; f.frequency.value=1800; g.gain.value=.25; s.buffer=b; s.connect(f).connect(g).connect(c.destination); s.start(); }};
+
+/* ============ TWEEN ENGINE ============ */
+const tweens = new Set(); let running = false;
+const backOut = t => { const c=1.35, u=t-1; return 1 + (c+1)*u*u*u + c*u*u; };
+function addTween(tw){ tw.start = performance.now(); tweens.add(tw); if(!running){ running=true; requestAnimationFrame(tick); } }
+function tick(){
+  const now = performance.now();
+  for(const tw of tweens){
+    const t = (now - tw.start - tw.delay) / (tw.dur*1000);
+    if(t < 0) continue;
+    if(t >= 1){ tw.drum.render(tw.to); tweens.delete(tw); if(tw.sound) Sound.click(); tw.end && tw.end(); }
+    else tw.drum.render(tw.from + (tw.to - tw.from) * (tw.ease || backOut)(t));
+  }
+  if(tweens.size) requestAnimationFrame(tick); else running = false;
+}
+
+/* ============ DRUM (projected cylinder, 6 faces) ============ */
+const STEP = 34 * Math.PI / 180, R_K = 1 / (2 * Math.sin(17 * Math.PI / 180));
+class Drum {
+  constructor(el, chars){
+    this.el = el; this.chars = chars; this.pos = 0; this.target = 0; this.tw = null;
+    this.faces = Array.from({length:6}, () => { const f = document.createElement("div"); f.className="face"; el.appendChild(f); return f; });
+    this.measure(); this.render(0);
+  }
+  measure(){ this.h = this.el.clientHeight / 1.62; this.R = this.h * R_K; }
+  render(pos){
+    this.pos = pos; const b = Math.floor(pos), fr = pos - b, n = this.chars.length;
+    for(let i=0;i<6;i++){
+      const o = i-2, a = (o - fr) * STEP, f = this.faces[i];
+      if(Math.abs(a) >= Math.PI/2){ f.style.visibility = "hidden"; continue; }
+      f.style.visibility = "visible";
+      f.style.transform = `translateY(${this.R*Math.sin(a)}px) scaleY(${Math.cos(a)})`;
+      const ch = this.chars[mod(b+o, n)]; if(f.textContent !== ch) f.textContent = ch;
+    }
+  }
+  /* roll forward to char index `idx`; extra = additional full turns */
+  to(idx, {extra=0, delay=0, sound=true} = {}){
+    const n = this.chars.length, d = mod(idx - this.target, n) + extra*n;
+    if(!d) return; if(this.tw) tweens.delete(this.tw);
+    const from = this.pos, to = this.target + d; this.target = to;
+    if(REDUCED){ this.render(to); return; }
+    this.tw = {drum:this, from, to, delay, dur:Math.min(2.2, .6 + .022*d), sound};
+    addTween(this.tw);
+  }
+  flick(){
+    if(REDUCED || tweens.has(this.tw)) return; const p = this.pos;
+    addTween({drum:this, from:p, to:p+.3, delay:0, dur:.14, ease:t=>1-(1-t)*(1-t), sound:false,
+      end:()=>addTween({drum:this, from:p+.3, to:p, delay:0, dur:.5, sound:false})});
+  }
+}
+
+/* ============ BUILD ============ */
+const drums = [];
+for(let i=0;i<N_DRUMS;i++){ const el = document.createElement("div"); el.className="drum"; $("#win").appendChild(el);
+  const d = new Drum(el, CHARS); drums.push(d); el.addEventListener("mouseenter", () => d.flick()); }
+const clockDrums = [];
+for(let i=0;i<6;i++){
+  if(i && i%2===0){ const s=document.createElement("i"); s.textContent=":"; $("#clock").appendChild(s); }
+  const el = document.createElement("div"); el.className="drum"; $("#clock").appendChild(el); clockDrums.push(new Drum(el, DIGITS));
+}
+const segs = SCENES.map(() => { const b = document.createElement("b"); $("#segs").appendChild(b); return b; });
+$("#segs").style.setProperty("--cyc", CYCLE_MS+"ms");
+const measureAll = () => [...drums, ...clockDrums].forEach(d => { d.measure(); d.render(d.pos); });
+addEventListener("resize", measureAll);
+document.fonts && document.fonts.ready.then(measureAll);
+
+/* ============ CLOCK ============ */
+function updateClock(first){
+  const t = new Date(), s = [t.getHours(), t.getMinutes(), t.getSeconds()].flatMap(v => [Math.floor(v/10), v%10]);
+  clockDrums.forEach((d, i) => { if(first){ d.target = s[i]; d.render(s[i]); } else d.to(s[i], {sound:false}); });
+}
+updateClock(true); setInterval(updateClock, 1000);
+
+/* ============ SCENES ============ */
+let scene = -1, timer = null, lastWheel = 0, heroOn = true;   /* heroOn: pause auto-cycle while the hero is off-screen */
+function cycle(){ if(!heroOn){ timer = setTimeout(cycle, 400); return; } showScene(scene+1, {extra: Math.random() < .3 ? 1 : 0}); }
+const orders = [
+  () => [...Array(N_DRUMS).keys()],
+  () => [...Array(N_DRUMS).keys()].reverse(),
+  () => [...Array(N_DRUMS).keys()].sort((a,b) => Math.abs(a-4) - Math.abs(b-4))];
+function setCaption(text){
+  const items = []; let glue = false;   /* glue: previous segment ended without a space, so punctuation stays on that word */
+  text.split("*").forEach((seg, k) => seg.split(" ").forEach((t, j) => {
+    if(!t){ glue = false; return; }
+    const piece = k % 2 ? `<i>${esc(t)}</i>` : esc(t);
+    if(glue && j === 0 && items.length) items[items.length-1].push(piece); else items.push([piece]);
+    glue = true;
+  }));
+  $("#caption").innerHTML = items.map((it, n) => `<span class="w"><span style="--i:${n}">${it.join("")}</span></span>`).join(" ");
+}
+function showScene(i, {extra=0, perDrum=null, order=null} = {}){
+  scene = mod(i, SCENES.length);
+  const label = SCENES[scene][0], pad = Math.floor((N_DRUMS - label.length) / 2);
+  const ord = order || orders[scene % 3]();
+  ord.forEach((di, rank) => {
+    const ch = label[di - pad] || " ";
+    drums[di].to(CHARS.indexOf(ch), {extra: perDrum ? perDrum(di) : extra, delay: (perDrum ? 120 : 75) * rank});
+  });
+  setCaption(SCENES[scene][1]);
+  $("#plate").innerHTML = `<span>NO. ${String(scene+1).padStart(3,"0")} / ${String(SCENES.length).padStart(3,"0")}</span>`;
+  segs.forEach((b, k) => { b.className = k < scene ? "done" : ""; });
+  void $("#segs").offsetWidth; segs[scene].className = "on";
+  clearTimeout(timer); timer = setTimeout(cycle, CYCLE_MS);
+}
+const next = () => showScene(scene+1, {extra:1});
+function pull(){
+  let k; do { k = Math.floor(Math.random()*SCENES.length); } while(k === scene);
+  showScene(k, {perDrum: () => 1 + Math.floor(Math.random()*3)});
+}
+
+/* ============ INTERACTIONS ============ */
+const counter = $("#win");
+counter.addEventListener("click", e => { if(!e.target.closest("#card")) next(); });
+counter.addEventListener("keydown", e => { if((e.key==="Enter"||e.key===" ") && e.target === counter){ e.preventDefault(); if(!e.repeat) next(); } });
+counter.addEventListener("wheel", e => { e.preventDefault(); const n = performance.now(); if(n - lastWheel < 650) return; lastWheel = n;
+  showScene(scene + (e.deltaY > 0 ? 1 : -1), {extra:1}); }, {passive:false});
+$("#knob").addEventListener("click", pull);
+
+const toast = msg => { const t = $("#toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("on"), 3200); };
+$("#card").addEventListener("click", e => {
+  e.stopPropagation(); const c = e.currentTarget; c.classList.add("out");
+  setTimeout(() => c.classList.remove("out"), 900);
+  if(RESUME_URL) window.open(RESUME_URL, "_blank", "noopener"); else toast("Résumé link not set — edit RESUME_URL in the script.");
+});
+
+$("#sound").addEventListener("click", e => {
+  const b = e.currentTarget; Sound.on = !Sound.on; b.setAttribute("aria-pressed", Sound.on);
+  if(Sound.on){ Sound.ctx = Sound.ctx || new (window.AudioContext || window.webkitAudioContext)(); Sound.ctx.resume(); }
+});
+
+/* mouse: glow, tilt, light, cursor */
+const cur = $("#cur"); let cx = 0, cy = 0, tx = 0, ty = 0;
+let curRaf = 0;
+function curLoop(){ cx += (tx-cx)*.2; cy += (ty-cy)*.2; cur.style.transform = `translate(${cx}px,${cy}px)`;
+  curRaf = (Math.abs(tx-cx) > .1 || Math.abs(ty-cy) > .1) ? requestAnimationFrame(curLoop) : 0; }
+if(matchMedia("(hover:hover)").matches){
+  addEventListener("mousemove", e => {
+    tx = e.clientX; ty = e.clientY;
+    if(!cur.classList.contains("show")){ cx = tx; cy = ty; cur.classList.add("show"); }
+    if(!curRaf) curRaf = requestAnimationFrame(curLoop);
+    const nx = e.clientX / innerWidth - .5, ny = e.clientY / innerHeight - .5, s = document.documentElement.style;
+    s.setProperty("--mx", e.clientX + "px"); s.setProperty("--my", e.clientY + "px");
+    if(!REDUCED){ s.setProperty("--rx", (-ny*8) + "deg"); s.setProperty("--ry", (nx*10) + "deg"); s.setProperty("--sx", (nx*14) + "px"); s.setProperty("--sy", (ny*14) + "px"); }
+    const t = e.target.closest("[data-cur]"); cur.classList.toggle("big", !!t); if(t) cur.textContent = t.dataset.cur; else cur.textContent = "";
+  });
+}
+
+/* ============ SECTIONS ============ */
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const rows = (sel, items) => { $(sel).innerHTML = items.map(([a,b,c]) => `<div class="row"><h3>${esc(a)}</h3><div><p>${esc(b)}</p>${c ? `<small>${esc(c)}</small>` : ""}</div></div>`).join(""); };
+rows("#work-list", PROJECTS);
+rows("#stack-list", STACK);
+if(EXPERIENCE.length) rows("#exp-list", EXPERIENCE.map(x => [`${x.role}, ${x.org}`, x.note, x.period]));
+else $("#exp-list").innerHTML = `<p class="lead">No formal roles are listed yet. The projects under Work show what I build.</p>`;
+$("#mail").href = "mailto:" + ME.email; $("#mail").textContent = ME.email;
+$("#elsewhere").innerHTML = ME.links.concat(LINKEDIN_URL ? [["LinkedIn", LINKEDIN_URL]] : [])
+  .map(l => `<a href="${esc(l[1])}" target="_blank" rel="noopener">${esc(l[0])}</a>`).join("");
+
+/* ============ NAV: active section (IntersectionObserver) ============ */
+const nav = $("nav"), navLinks = [...document.querySelectorAll(".links a, #mnav a")];
+function setActive(id){
+  navLinks.forEach(a => a.getAttribute("href") === "#" + id ? a.setAttribute("aria-current", "location") : a.removeAttribute("aria-current"));
+  nav.classList.toggle("stuck", id !== "hero");
+}
+const io = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting) setActive(e.target.id); }), {rootMargin:"-45% 0px -50% 0px"});
+["hero","work","about","stack","experience","contact"].forEach(id => io.observe(document.getElementById(id)));
+new IntersectionObserver(es => { heroOn = es[0].isIntersecting; }).observe(document.getElementById("hero"));
+
+/* ============ NAV: mobile menu ============ */
+const menu = $("#menu"), mnav = $("#mnav");
+function setMenu(open){
+  mnav.hidden = !open; menu.setAttribute("aria-expanded", open); menu.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+  document.documentElement.style.overflow = open ? "hidden" : "";
+  if(open) mnav.querySelector("a").focus();
+}
+menu.addEventListener("click", () => setMenu(mnav.hidden));
+mnav.addEventListener("click", e => { if(e.target.closest("a")) setMenu(false); });
+addEventListener("keydown", e => {
+  if(mnav.hidden) return;
+  if(e.key === "Escape"){ setMenu(false); menu.focus(); }
+  else if(e.key === "Tab"){ const f = [menu, ...mnav.querySelectorAll("a")], i = f.indexOf(document.activeElement);
+    e.preventDefault(); f[i < 0 ? 0 : mod(i + (e.shiftKey ? -1 : 1), f.length)].focus(); }
+});
+matchMedia("(min-width:901px)").addEventListener("change", e => { if(e.matches && !mnav.hidden) setMenu(false); });
+
+/* ============ BOOT: scramble → 2 turns → scene 1 ============ */
+drums.forEach((d, i) => d.to(Math.floor(Math.random()*CHARS.length), {delay: i*40, sound:false}));
+setTimeout(() => showScene(0, {extra:2}), REDUCED ? 0 : 600);
+</script>
+</body>
+</html>
