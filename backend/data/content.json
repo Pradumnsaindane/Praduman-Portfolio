@@ -1,0 +1,45 @@
+{
+  "profile": {
+    "name": "Pradumn Bharat Saindane",
+    "title": "Software Engineer | Full-Stack Developer | AI Product Builder",
+    "location": "Pune, Maharashtra, India",
+    "email": "psaindane09@gmail.com",
+    "about": "Pradumn Bharat Saindane is a software engineer, full-stack developer and AI product builder in Pune, Maharashtra, India. He builds full-stack applications, AI-powered products and scalable digital experiences.",
+    "resumeUrl": "",
+    "linkedinUrl": "",
+    "links": [
+      ["GitHub", "https://github.com/Pradumnsaindane"],
+      ["Portfolio", "https://pradumn-saindane-portfolio.vercel.app"],
+      ["X", "https://x.com/pradumncodes7"],
+      ["LeetCode", "https://leetcode.com/u/Pradum_saindane/"],
+      ["HackerRank", "https://www.hackerrank.com/profile/psaindane09"]
+    ]
+  },
+  "scenes": [
+    ["PORTFOLIO", "Hi, I'm Pradumn, a *software engineer*."],
+    ["FULLSTACK", "I build complete products, from *frontend to backend*."],
+    ["AI BUILD", "Exploring artificial intelligence to create *smarter products*."],
+    ["ENGINEER", "Writing clean code and building *reliable systems*."],
+    ["PROJECTS", "Turning ambitious ideas into *working products*."],
+    ["STACK", "React, Next.js, Node.js, Python and *cloud technologies*."],
+    ["PRODUCT", "I believe great software solves *real problems*."],
+    ["CONNECT", "Have an ambitious idea? *Let's build it*."]
+  ],
+  "projects": [
+    ["COMMUN", "A career-building platform for students, aspiring developers and professionals, focused on community, learning, networking, discovery and career development.", "Next.js, React, Supabase, PostgreSQL, authentication"],
+    ["LOOK THROUGH", "A product/dashboard experience focused on presenting information through a clean, modern interface.", "Next.js, React, PostgreSQL, Neon Auth, server-side authorization"],
+    ["AI MODEL GENERATOR", "An AI-focused application that generates model-related outputs through an API-driven architecture.", "Python, Flask, OpenAI-compatible API, backend services"],
+    ["EMPLOYEE PERFORMANCE AI", "An AI/ML project that analyzes employee performance using a machine learning prediction workflow.", "Python, Flask, scikit-learn, Decision Tree, synthetic dataset"],
+    ["QUEUELESS", "A queue-management project built for a hackathon, improving queue handling through a digital solution.", "React, JavaScript"]
+  ],
+  "stack": [
+    ["Programming Languages", "Java, JavaScript, Python, TypeScript"],
+    ["Frontend", "HTML, CSS, React, Next.js, Tailwind CSS"],
+    ["Backend", "Node.js, Express.js, Python, Flask, REST APIs"],
+    ["Databases", "PostgreSQL, MySQL, MongoDB, Supabase"],
+    ["AI & Machine Learning", "OpenAI API integration, LLM integration, scikit-learn fundamentals"],
+    ["Tools & Platforms", "Git, GitHub, VS Code, Vercel"],
+    ["Cloud & DevOps", "AWS fundamentals, Docker, Kubernetes fundamentals, CI/CD, GitHub Actions"]
+  ],
+  "experience": []
+}
