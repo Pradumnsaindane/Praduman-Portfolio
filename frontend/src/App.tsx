@@ -1,4 +1,4 @@
-import { lazy, Suspense, useState, type FormEvent } from 'react'
+import { lazy, Suspense, useEffect, useState, type FormEvent } from 'react'
 import useSWR from 'swr'
 import { ArrowDownRight, ArrowUpRight, Github, Linkedin, Mail } from 'lucide-react'
 import type { BrandLogo } from './components/ui/shadcn-studio-hero-section-44'
@@ -80,6 +80,89 @@ function ContactForm() {
   )
 }
 
+function useAmbientProjectGlow(projectCount: number, paused: boolean) {
+  const [activeIndex, setActiveIndex] = useState<number | null>(null)
+
+  useEffect(() => {
+    if (projectCount === 0 || paused) {
+      setActiveIndex(null)
+      return
+    }
+
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
+    let startTimer = 0
+    let fadeTimer = 0
+    let lastIndex = -1
+
+    const clearTimers = () => {
+      window.clearTimeout(startTimer)
+      window.clearTimeout(fadeTimer)
+    }
+
+    const scheduleNext = () => {
+      if (document.visibilityState !== 'visible' || reducedMotion.matches) return
+
+      startTimer = window.setTimeout(() => {
+        let nextIndex = Math.floor(Math.random() * projectCount)
+        if (projectCount > 1 && nextIndex === lastIndex) nextIndex = (nextIndex + 1) % projectCount
+        lastIndex = nextIndex
+        setActiveIndex(nextIndex)
+        fadeTimer = window.setTimeout(() => {
+          setActiveIndex(null)
+          scheduleNext()
+        }, 900)
+      }, 3000 + Math.random() * 4000)
+    }
+
+    const syncMotionAndVisibility = () => {
+      clearTimers()
+      setActiveIndex(null)
+      scheduleNext()
+    }
+
+    scheduleNext()
+    document.addEventListener('visibilitychange', syncMotionAndVisibility)
+    reducedMotion.addEventListener('change', syncMotionAndVisibility)
+
+    return () => {
+      clearTimers()
+      document.removeEventListener('visibilitychange', syncMotionAndVisibility)
+      reducedMotion.removeEventListener('change', syncMotionAndVisibility)
+    }
+  }, [projectCount, paused])
+
+  return activeIndex
+}
+
+function ProjectList({ projects }: { projects: Content['projects'] }) {
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
+  const ambientGlowIndex = useAmbientProjectGlow(projects.length, hoveredIndex !== null)
+  const activeGlowIndex = hoveredIndex === null ? ambientGlowIndex : null
+
+  return (
+    <div className="project-list">
+      {projects.map(([name, summary, details], index) => (
+        <article className="project-row" key={`${name}-${index}`}>
+          <span className="project-index">0{index + 1}</span>
+          <div>
+            <h3>
+              <span
+                className={activeGlowIndex === index ? 'project-name project-name--ambient' : 'project-name'}
+                onPointerEnter={() => setHoveredIndex(index)}
+                onPointerLeave={() => setHoveredIndex(null)}
+              >
+                {name}
+              </span>
+            </h3>
+            <p>{summary}</p>
+          </div>
+          <span className="project-stack">{details}</span>
+        </article>
+      ))}
+    </div>
+  )
+}
+
 export default function App() {
   const { data, error, isLoading, mutate } = useSWR<Content>('/api/content', fetcher)
 
@@ -120,17 +203,9 @@ export default function App() {
           />
         </Suspense>
 
-        <section className="content-section" id="work" aria-labelledby="work-heading">
+        <section className="content-section theme-dark-section" id="work" aria-labelledby="work-heading">
           <div className="section-heading"><p className="eyebrow">Selected projects</p><h2 id="work-heading">Work that moves<br /><em>ideas forward.</em></h2><ArrowDownRight aria-hidden="true" /></div>
-          <div className="project-list">
-            {projects.map(([name, summary, details], index) => (
-              <article className="project-row" key={`${name}-${index}`}>
-                <span className="project-index">0{index + 1}</span>
-                <div><h3>{name}</h3><p>{summary}</p></div>
-                <span className="project-stack">{details}</span>
-              </article>
-            ))}
-          </div>
+          <ProjectList projects={projects} />
         </section>
 
         <section className="content-section about-section" id="about" aria-labelledby="about-heading">
@@ -139,12 +214,12 @@ export default function App() {
           <p className="location-label">Based in {profile.location}</p>
         </section>
 
-        <section className="content-section stack-section" id="stack" aria-labelledby="stack-heading">
+        <section className="content-section stack-section theme-dark-section" id="stack" aria-labelledby="stack-heading">
           <p className="eyebrow">Tools I work with</p><h2 id="stack-heading">My stack</h2>
           <div className="stack-list">{stack.map(([category, tools]) => <div className="stack-row" key={category}><h3>{category}</h3><p>{tools}</p></div>)}</div>
         </section>
 
-        <section className="content-section experience-section" id="experience" aria-labelledby="experience-heading">
+        <section className="content-section experience-section theme-dark-section" id="experience" aria-labelledby="experience-heading">
           <p className="eyebrow">The path so far</p><h2 id="experience-heading">Experience</h2>
           {experience.length ? <div className="project-list">{experience.map((item, index) => <article className="project-row" key={`${item.org}-${index}`}><span className="project-index">0{index + 1}</span><div><h3>{item.role}, {item.org}</h3><p>{item.note}</p></div><span className="project-stack">{item.period}</span></article>)}</div> : <p className="experience-note">I&apos;m focused on building thoughtful software and growing through hands-on projects.</p>}
         </section>
