@@ -1,3 +1,4 @@
 node_modules/
+frontend/dist/
 backend/data/messages.json
 .DS_Store

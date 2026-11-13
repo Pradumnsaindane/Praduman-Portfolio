@@ -1,0 +1,13 @@
+{
+  "name": "pradumn-portfolio",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": ["frontend"],
+  "scripts": {
+    "build": "npm --workspace frontend run build",
+    "dev": "concurrently -k -n api,web -c yellow,cyan \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

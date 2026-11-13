@@ -1,79 +1,17 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Pradumn Bharat Saindane — Software Engineer</title>
-<meta name="description" content="Pradumn Bharat Saindane — Software Engineer, Full-Stack Developer and AI Product Builder.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,900&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/style.css">
-</head>
-<body class="loading">
-<h1 class="sr">Pradumn Bharat Saindane, Software Engineer and Full-Stack Developer</h1>
-
-<div id="boot-status" role="status" aria-live="polite"><span class="spin" aria-hidden="true"></span><span id="boot-msg">Loading content from the API…</span></div>
-
-<nav aria-label="Primary">
-  <a class="logo up" href="#hero" aria-label="pradumn, back to top">pradumn<sup>®</sup></a>
-  <div class="links up" style="--d:1">
-    <a href="#work"><span class="roll"><span>Work<sup>05</sup></span><span>Work<sup>05</sup></span></span></a>
-    <a href="#about"><span class="roll"><span>About</span><span>About</span></span></a>
-    <a href="#stack"><span class="roll"><span>Stack</span><span>Stack</span></span></a>
-    <a href="#experience"><span class="roll"><span>Experience</span><span>Experience</span></span></a>
-    <a href="#contact"><span class="roll"><span>Contact</span><span>Contact</span></span></a>
-  </div>
-  <div class="right up" style="--d:2">
-    <div id="clock" role="timer" aria-label="Local time"></div>
-    <button class="sound" id="sound" aria-pressed="false" aria-label="Toggle drum click sound"><span class="eq"><b></b><b></b><b></b></span>Sound</button>
-    <a class="pill" href="#contact" data-cur="HELLO"><i></i>Let's connect</a>
-    <button class="menu" id="menu" type="button" aria-expanded="false" aria-controls="mnav" aria-label="Open menu"><span></span><span></span></button>
-  </div>
-</nav>
-
-<main>
-<section id="hero" aria-label="Introduction">
-  <div class="machine" id="machine">
-    <div class="plate" id="plate" aria-hidden="true"></div>
-    <div class="counter">
-      <div class="win" id="win" role="button" tabindex="0" data-cur="SPIN" aria-label="Counter. Press to show the next scene."></div>
-      <div class="slot"><button class="card" id="card" data-cur="CV ↗" aria-label="Open résumé"><span class="chip"></span><span class="ps">PS</span><small>PRADUMN<br>SOFTWARE ENGINEERING.</small></button></div>
-    </div>
-    <button class="knob" id="knob" data-cur="PULL" aria-label="Pull to spin to a random scene"><i></i>PULL</button>
-    <p class="caption" id="caption" aria-live="polite"></p>
-  </div>
-  <div class="rail">
-  <span class="l up" style="--d:4">Software Engineering · Full Stack · AI · Product Development</span>
-  <div class="segs mid up" id="segs" style="--d:5"></div>
-  <a class="scroll up" href="#work" style="--d:6">Scroll to explore<i></i></a>
-  </div>
-</section>
-
-<section class="sec" id="work" aria-labelledby="h-work"><h2 id="h-work">Work</h2><div id="work-list"></div></section>
-<section class="sec" id="about" aria-labelledby="h-about"><h2 id="h-about">About</h2>
-  <p class="lead">Pradumn Bharat Saindane is a software engineer, full-stack developer and AI product builder in Pune, Maharashtra, India. He builds full-stack applications, AI-powered products and scalable digital experiences.</p></section>
-<section class="sec" id="stack" aria-labelledby="h-stack"><h2 id="h-stack">Stack</h2><div id="stack-list"></div></section>
-<section class="sec" id="experience" aria-labelledby="h-exp"><h2 id="h-exp">Experience</h2><div id="exp-list"></div></section>
-<section class="sec" id="contact" aria-labelledby="h-contact"><h2 id="h-contact">Contact</h2>
-  <p class="lead">Have an ambitious idea? Let's build it.</p><p><a class="mail" id="mail"></a></p><p id="elsewhere"></p>
-  <form class="cform" id="cform" novalidate>
-    <div><label for="cf-name">Name</label><input id="cf-name" name="name" type="text" autocomplete="name" required minlength="2" maxlength="120"></div>
-    <div><label for="cf-email">Email</label><input id="cf-email" name="email" type="email" autocomplete="email" required></div>
-    <div><label for="cf-message">Message</label><textarea id="cf-message" name="message" required minlength="10" maxlength="4000"></textarea></div>
-    <p class="err" id="cf-err" role="alert"></p>
-    <button type="submit" id="cf-submit">Send message</button>
-  </form>
-</section>
-</main>
-
-<div id="mnav" role="dialog" aria-modal="true" aria-label="Site navigation" hidden>
-  <a href="#work">Work</a><a href="#about">About</a><a href="#stack">Stack</a><a href="#experience">Experience</a><a href="#contact">Contact</a>
-</div>
-<div id="cur" aria-hidden="true"></div>
-<div id="toast" role="status"></div>
-
-
-<script src="/app.js" defer></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#e3170a" />
+    <meta name="description" content="Pradumn Bharat Saindane — software engineer, full-stack developer, and AI product builder in Pune, India." />
+    <title>Pradumn Bharat Saindane — Software Engineer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,500;75..125,700;75..125,900&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>
