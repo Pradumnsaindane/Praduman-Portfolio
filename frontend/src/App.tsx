@@ -195,7 +195,7 @@ export default function App() {
             role={profile.title.split('|').map((part) => part.trim()).join(' · ')}
             description={profile.about}
             availabilityLabel="Open to opportunities"
-            profileImage="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1000&q=85"
+            profileImage="/Pofilepicture.jpeg"
             downloadAction={{ label: profile.resumeUrl ? 'Download résumé' : 'Explore my work', href: profile.resumeUrl || '#work' }}
             connectAction={{ label: 'Get in touch', href: `mailto:${profile.email}` }}
             brandLogos={brandLogos}

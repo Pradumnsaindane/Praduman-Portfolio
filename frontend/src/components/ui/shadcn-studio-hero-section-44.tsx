@@ -12,6 +12,8 @@ import { Environment, Lightformer, useTexture } from '@react-three/drei'
 import { BallCollider, CuboidCollider, Physics, RigidBody, useRopeJoint, useSphericalJoint } from '@react-three/rapier'
 import type { RapierRigidBody, RigidBodyProps } from '@react-three/rapier'
 
+import ThermodynamicGrid from '@/components/ui/interactive-thermodynamic-grid'
+
 /* -------------------------------------------------------------------------- */
 /*                                   Helpers                                  */
 /* -------------------------------------------------------------------------- */
@@ -187,9 +189,10 @@ type BandProps = {
   frontImage: string
   isMobile: boolean
   colors: CardColors
+  setPhotoActive: (active: boolean) => void
 }
 
-const Band = ({ frontImage, isMobile, colors }: BandProps) => {
+const Band = ({ frontImage, isMobile, colors, setPhotoActive }: BandProps) => {
   const rope = useRef<THREE.Mesh>(null!)
   const fixed = useRef<RapierRigidBody>(null!)
   const j1 = useRef<LanyardRigidBody>(null!)
@@ -245,6 +248,8 @@ const Band = ({ frontImage, isMobile, colors }: BandProps) => {
 
     return texture
   }, [frontTexture, colors.accent])
+
+  useEffect(() => () => cardMap.dispose(), [cardMap])
 
   const [curve] = useState(() => {
     const ropeCurve = new THREE.CatmullRomCurve3([
@@ -334,14 +339,20 @@ const Band = ({ frontImage, isMobile, colors }: BandProps) => {
           <group
             scale={4}
             position={[0, -3.16, -0.09]}
+            onPointerEnter={() => setPhotoActive(true)}
+            onPointerLeave={() => {
+              if (!dragged) setPhotoActive(false)
+            }}
             onPointerUp={(e: ThreeEvent<PointerEvent>) => {
               ;(e.target as Element).releasePointerCapture(e.pointerId)
               drag(false)
+              setPhotoActive(false)
               document.body.style.userSelect = ''
             }}
             onPointerDown={(e: ThreeEvent<PointerEvent>) => {
-              ;(e.target as Element).setPointerCapture(e.pointerId)
+              (e.target as Element).setPointerCapture(e.pointerId)
               drag(new THREE.Vector3().copy(e.point).sub(vec.copy(card.current!.translation())))
+              setPhotoActive(true)
               document.body.style.userSelect = 'none'
             }}
           >
@@ -422,6 +433,7 @@ const IdCard = ({ frontImage, name, role, className }: { frontImage: string; nam
   const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth < 768)
   const [contextLossKey, setContextLossKey] = useState(0)
   const [webglAvailable, setWebglAvailable] = useState(false)
+  const [isPhotoActive, setIsPhotoActive] = useState(false)
   const eventSourceRef = useRef<HTMLElement | null>(typeof document !== 'undefined' ? document.body : null)
 
   useEffect(() => {
@@ -479,7 +491,7 @@ const IdCard = ({ frontImage, name, role, className }: { frontImage: string; nam
 
   const staticCard = (
     <div className='hero-id-fallback'>
-      <img src={frontImage} alt='' />
+      <img className='id-card-photo' src={frontImage} alt='' />
       <div className='hero-id-fallback-copy'>
         <span>Interactive portfolio · ID 01</span>
         <h2>{name}</h2>
@@ -495,7 +507,8 @@ const IdCard = ({ frontImage, name, role, className }: { frontImage: string; nam
       {webglAvailable ? (
         <Canvas
           key={contextLossKey}
-        eventSource={eventSourceRef as RefObject<HTMLElement>}
+          className={cn('id-card-photo', isPhotoActive && 'id-card-photo--color')}
+          eventSource={eventSourceRef as RefObject<HTMLElement>}
         camera={{ position: [0, 0, 20], fov: 20 }}
         dpr={[1, isMobile ? 1.25 : 1.5]}
         gl={{ alpha: true, antialias: true, powerPreference: 'default' }}
@@ -524,7 +537,7 @@ const IdCard = ({ frontImage, name, role, className }: { frontImage: string; nam
         <CameraAlign />
         <ambientLight intensity={Math.PI} />
         <Physics gravity={[0, -40, 0]} timeStep={isMobile ? 1 / 30 : 1 / 60}>
-          <Band frontImage={frontImage} isMobile={isMobile} colors={colors} />
+          <Band frontImage={frontImage} isMobile={isMobile} colors={colors} setPhotoActive={setIsPhotoActive} />
         </Physics>
         <StudioLighting />
         </Canvas>
@@ -724,6 +737,8 @@ export const HeroSection44 = ({
           </div>
         </div>
       </div>
+
+      <ThermodynamicGrid className='id-card-thermal-field' />
 
       <IdCard
         frontImage={profileImage}
