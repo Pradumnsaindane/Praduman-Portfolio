@@ -12,7 +12,6 @@ import { Environment, Lightformer, useTexture } from '@react-three/drei'
 import { BallCollider, CuboidCollider, Physics, RigidBody, useRopeJoint, useSphericalJoint } from '@react-three/rapier'
 import type { RapierRigidBody, RigidBodyProps } from '@react-three/rapier'
 
-import ThermodynamicGrid from '@/components/ui/interactive-thermodynamic-grid'
 
 /* -------------------------------------------------------------------------- */
 /*                                   Helpers                                  */
@@ -737,8 +736,6 @@ export const HeroSection44 = ({
           </div>
         </div>
       </div>
-
-      <ThermodynamicGrid className='id-card-thermal-field' />
 
       <IdCard
         frontImage={profileImage}

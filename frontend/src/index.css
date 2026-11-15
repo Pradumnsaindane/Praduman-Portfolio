@@ -230,6 +230,19 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   .site-footer > span { order: 1; width: 100%; }
 }
 
+.global-cursor-field {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  pointer-events: none;
+  mix-blend-mode: difference;
+  opacity: 0.92;
+}
+
+@media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .global-cursor-field { display: none !important; }
+}
+
 .adaptive-cursor {
   --cursor-rgb: 255 255 255;
   --cursor-glow-core: 10%;
@@ -374,25 +387,6 @@ html.has-adaptive-cursor :where(select) { cursor: auto !important; }
   .adaptive-cursor__ring,
   .adaptive-cursor__core { transition: none; }
 }
-.id-card-thermal-field {
-  display: none;
-  top: -7.75rem;
-  right: clamp(2rem, 10vw, 9rem);
-  left: auto;
-  width: min(34rem, 40vw);
-  height: 45.5rem;
-  opacity: 0.5;
-  mask-image: radial-gradient(ellipse 72% 58% at 68% 46%, #000 8%, transparent 80%);
-  -webkit-mask-image: radial-gradient(ellipse 72% 58% at 68% 46%, #000 8%, transparent 80%);
-  pointer-events: none;
-}
-
-.id-card-thermal-field canvas { pointer-events: none; }
-
-@media (min-width: 1024px) {
-  .id-card-thermal-field { display: block; }
-}
-
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
