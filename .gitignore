@@ -1,4 +1,13 @@
 node_modules/
+*/node_modules/
 frontend/dist/
+dist/
+*/dist/
+*.tsbuildinfo
 backend/data/messages.json
 .DS_Store
+*/.DS_Store
+.env
+.env.*
+!.env.example
+

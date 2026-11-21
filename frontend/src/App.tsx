@@ -2,6 +2,8 @@ import { lazy, Suspense, useEffect, useState, type FormEvent } from 'react'
 import useSWR from 'swr'
 import { ArrowDownRight, ArrowUpRight, Github, Linkedin, Mail } from 'lucide-react'
 import type { BrandLogo } from './components/ui/shadcn-studio-hero-section-44'
+import { RadialScrollGallery } from './components/ui/portfolio-and-image-gallery'
+import { Badge } from './components/ui/badge'
 
 const HeroSection44 = lazy(() => import('./components/ui/shadcn-studio-hero-section-44'))
 
@@ -32,6 +34,14 @@ const brandLogos: BrandLogo[] = [
   ['react', 'React'], ['nextdotjs', 'Next.js'], ['typescript', 'TypeScript'], ['nodedotjs', 'Node.js'],
   ['python', 'Python'], ['postgresql', 'PostgreSQL'], ['tailwindcss', 'Tailwind CSS'], ['vercel', 'Vercel'],
 ].map(([slug, name]) => ({ image: `https://cdn.simpleicons.org/${slug}`, name }))
+
+const PROJECT_IMAGES = [
+  'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=600&q=80',
+  'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=600&q=80',
+  'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80',
+  'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=600&q=80',
+  'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&w=600&q=80',
+]
 
 function ContactForm() {
   const [message, setMessage] = useState('')
@@ -134,6 +144,83 @@ function useAmbientProjectGlow(projectCount: number, paused: boolean) {
   return activeIndex
 }
 
+function RadialProjectGallery({ projects }: { projects: Content['projects'] }) {
+  if (!projects.length) return null
+
+  return (
+    <div className="w-full my-8 overflow-hidden">
+      <div className="text-center mb-4 space-y-2">
+        <Badge variant="secondary" className="px-3 py-1 text-xs tracking-wider uppercase bg-white/10 text-white border-white/20">
+          Scroll-Driven Showcase
+        </Badge>
+        <p className="text-xs text-neutral-400">Scroll to rotate through selected projects</p>
+      </div>
+
+      <RadialScrollGallery
+        className="!min-h-[560px]"
+        baseRadius={420}
+        mobileRadius={240}
+        scrollDuration={2000}
+        visiblePercentage={45}
+      >
+        {(hoveredIndex) =>
+          projects.map(([name, summary, details], index) => {
+            const isActive = hoveredIndex === index
+            const image = PROJECT_IMAGES[index % PROJECT_IMAGES.length]
+
+            return (
+              <div
+                key={name}
+                className={`
+                  w-[220px] h-[310px] sm:w-[260px] sm:h-[350px] 
+                  rounded-2xl border overflow-hidden flex flex-col justify-between 
+                  transition-all duration-500 shadow-2xl backdrop-blur-md
+                  ${
+                    isActive
+                      ? 'bg-neutral-900/95 border-orange-500/80 text-white scale-100 shadow-orange-500/20'
+                      : 'bg-neutral-950/85 border-white/10 text-neutral-300 scale-95 opacity-80'
+                  }
+                `}
+              >
+                <div className="relative h-32 sm:h-36 w-full overflow-hidden bg-neutral-900">
+                  <img
+                    src={image}
+                    alt={name}
+                    className="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-black/30" />
+                  <span className="absolute top-3 left-3 font-mono text-xs px-2 py-0.5 rounded-full bg-black/60 text-white/90 border border-white/10 backdrop-blur-sm">
+                    0{index + 1}
+                  </span>
+                </div>
+
+                <div className="p-4 flex-1 flex flex-col justify-between">
+                  <div>
+                    <h3 className="text-base sm:text-lg font-bold tracking-tight text-white line-clamp-1 mb-1">
+                      {name}
+                    </h3>
+                    <p className="text-xs text-neutral-400 line-clamp-2 leading-relaxed">
+                      {summary}
+                    </p>
+                  </div>
+
+                  <div className="mt-3 pt-3 border-t border-white/10 flex items-center justify-between">
+                    <span className="text-[11px] font-mono text-neutral-400 truncate max-w-[170px]">
+                      {details.split(',')[0]}
+                    </span>
+                    <ArrowUpRight className="w-3.5 h-3.5 text-neutral-400" />
+                  </div>
+                </div>
+              </div>
+            )
+          })
+        }
+      </RadialScrollGallery>
+    </div>
+  )
+}
+
 function ProjectList({ projects }: { projects: Content['projects'] }) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
   const ambientGlowIndex = useAmbientProjectGlow(projects.length, hoveredIndex !== null)
@@ -204,7 +291,14 @@ export default function App() {
         </Suspense>
 
         <section className="content-section theme-dark-section" id="work" aria-labelledby="work-heading">
-          <div className="section-heading"><p className="eyebrow">Selected projects</p><h2 id="work-heading">Work that moves<br /><em>ideas forward.</em></h2><ArrowDownRight aria-hidden="true" /></div>
+          <div className="section-heading">
+            <p className="eyebrow">Selected projects</p>
+            <h2 id="work-heading">Work that moves<br /><em>ideas forward.</em></h2>
+            <ArrowDownRight aria-hidden="true" />
+          </div>
+
+          <RadialProjectGallery projects={projects} />
+
           <ProjectList projects={projects} />
         </section>
 
