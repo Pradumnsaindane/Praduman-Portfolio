@@ -88,48 +88,6 @@
     }
 
     /* ============================================================
-     * CUSTOM THERMODYNAMIC CURSOR
-     * ============================================================ */
-    * { cursor: none !important; }
-    #thermo-cursor-canvas {
-      position: fixed;
-      inset: 0;
-      width: 100vw;
-      height: 100vh;
-      pointer-events: none;
-      z-index: 99999;
-    }
-    #cursor-dot {
-      position: fixed;
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: #b15f2c;
-      pointer-events: none;
-      z-index: 100000;
-      transform: translate(-50%, -50%);
-      transition: transform 0.08s ease, opacity 0.2s;
-      mix-blend-mode: difference;
-    }
-    #cursor-ring {
-      position: fixed;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      border: 1.5px solid rgba(177, 95, 44, 0.65);
-      pointer-events: none;
-      z-index: 99999;
-      transform: translate(-50%, -50%);
-      transition: transform 0.14s cubic-bezier(0.2,0.8,0.2,1), width 0.25s ease, height 0.25s ease, opacity 0.2s;
-    }
-    body:has(a:hover) #cursor-ring,
-    body:has(button:hover) #cursor-ring,
-    body:has(.portfolio-card:hover) #cursor-ring {
-      width: 56px;
-      height: 56px;
-    }
-
-    /* ============================================================
      * PAGE TRANSITION OVERLAY
      * ============================================================ */
     #page-transition-overlay {
@@ -160,7 +118,7 @@
       outline-offset: 3px;
     }
     .portfolio-card[data-href] {
-      cursor: none;
+      cursor: pointer;
     }
     .portfolio-card-launch-hint {
       display: flex;
@@ -1644,10 +1602,6 @@
   </style>
 </head>
 <body>
-  <!-- Custom Cursor Elements -->
-  <canvas id="thermo-cursor-canvas" aria-hidden="true"></canvas>
-  <div id="cursor-dot" aria-hidden="true"></div>
-  <div id="cursor-ring" aria-hidden="true"></div>
   <!-- Page Transition Overlay -->
   <div id="page-transition-overlay" aria-hidden="true"></div>
 
@@ -3054,133 +3008,7 @@
     });
 
     /* =============================================================
-     * 14. Thermodynamic Cursor Animation
-     * ============================================================= */
-    (function initThermoCursor() {
-      const canvas = document.getElementById('thermo-cursor-canvas');
-      const dot = document.getElementById('cursor-dot');
-      const ring = document.getElementById('cursor-ring');
-      if (!canvas || !dot || !ring) return;
-
-      const ctx = canvas.getContext('2d', { alpha: true });
-      const resolution = 20;
-      const coolingFactor = 0.955;
-
-      let cols = 0, rows = 0, width = 0, height = 0;
-      let grid = new Float32Array(0);
-      const mouse = { x: -1000, y: -1000, prevX: -1000, prevY: -1000, active: false };
-      let dotX = -1000, dotY = -1000;
-      let ringX = -1000, ringY = -1000;
-
-      function resize() {
-        width = window.innerWidth;
-        height = window.innerHeight;
-        canvas.width = width;
-        canvas.height = height;
-        cols = Math.ceil(width / resolution);
-        rows = Math.ceil(height / resolution);
-        grid = new Float32Array(cols * rows).fill(0);
-      }
-
-      function getThermalColor(t) {
-        const r = Math.min(255, Math.max(0, t * 2.5 * 255));
-        const g = Math.min(255, Math.max(0, (t * 2.5 - 1) * 255));
-        const b = Math.min(255, Math.max(0, (t * 2.5 - 2) * 255 + t * 50));
-        const a = Math.min(1, t * 2.2);
-        return `rgba(${r + 10},${g + 10},${b + 15},${a})`;
-      }
-
-      function update() {
-        // Smooth dot position (instant)
-        dotX = mouse.x;
-        dotY = mouse.y;
-
-        // Smooth ring position (lagged)
-        ringX += (mouse.x - ringX) * 0.14;
-        ringY += (mouse.y - ringY) * 0.14;
-
-        dot.style.left = dotX + 'px';
-        dot.style.top = dotY + 'px';
-        ring.style.left = ringX + 'px';
-        ring.style.top = ringY + 'px';
-
-        // Inject heat
-        if (mouse.active) {
-          const dx = mouse.x - mouse.prevX;
-          const dy = mouse.y - mouse.prevY;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          const steps = Math.ceil(dist / (resolution / 2));
-
-          for (let s = 0; s <= steps; s++) {
-            const t = steps > 0 ? s / steps : 0;
-            const mx = mouse.prevX + dx * t;
-            const my = mouse.prevY + dy * t;
-            const col = Math.floor(mx / resolution);
-            const row = Math.floor(my / resolution);
-            const radius = 2;
-
-            for (let i = -radius; i <= radius; i++) {
-              for (let j = -radius; j <= radius; j++) {
-                const c = col + i;
-                const r = row + j;
-                if (c >= 0 && c < cols && r >= 0 && r < rows) {
-                  const d = Math.sqrt(i * i + j * j);
-                  if (d <= radius) {
-                    const idx = c + r * cols;
-                    grid[idx] = Math.min(1.0, grid[idx] + 0.4 * (1 - d / radius));
-                  }
-                }
-              }
-            }
-          }
-        }
-        mouse.prevX = mouse.x;
-        mouse.prevY = mouse.y;
-
-        // Clear canvas (fully transparent between frames)
-        ctx.clearRect(0, 0, width, height);
-
-        // Render grid
-        for (let r = 0; r < rows; r++) {
-          for (let c = 0; c < cols; c++) {
-            const idx = c + r * cols;
-            const temp = grid[idx];
-            grid[idx] *= coolingFactor;
-
-            if (temp > 0.04) {
-              const x = c * resolution;
-              const y = r * resolution;
-              const size = resolution * (0.7 + temp * 0.6);
-              const offset = (resolution - size) / 2;
-              ctx.fillStyle = getThermalColor(temp);
-              ctx.beginPath();
-              ctx.roundRect(x + offset, y + offset, size, size, size * 0.25);
-              ctx.fill();
-            }
-          }
-        }
-
-        requestAnimationFrame(update);
-      }
-
-      window.addEventListener('pointermove', (e) => {
-        mouse.x = e.clientX;
-        mouse.y = e.clientY;
-        mouse.active = true;
-      });
-      window.addEventListener('pointerleave', () => { mouse.active = false; });
-      document.addEventListener('pointerenter', (e) => {
-        mouse.x = e.clientX;
-        mouse.y = e.clientY;
-      });
-
-      window.addEventListener('resize', resize);
-      resize();
-      update();
-    })();
-
-    /* =============================================================
-     * 15. Portfolio Card Click → Smooth Transition → GitHub
+     * 14. Portfolio Card Click → Smooth Transition → GitHub
      * ============================================================= */
     (function initProjectLinks() {
       const overlay = document.getElementById('page-transition-overlay');
@@ -3199,8 +3027,6 @@
       }
 
       document.querySelectorAll('.portfolio-card[data-href]').forEach((card) => {
-        card.style.cursor = 'none';
-
         card.addEventListener('click', (e) => {
           e.preventDefault();
           navigateWithTransition(card.dataset.href);
