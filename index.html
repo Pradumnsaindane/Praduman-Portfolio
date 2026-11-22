@@ -87,6 +87,101 @@
       }
     }
 
+    /* ============================================================
+     * CUSTOM THERMODYNAMIC CURSOR
+     * ============================================================ */
+    * { cursor: none !important; }
+    #thermo-cursor-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 99999;
+    }
+    #cursor-dot {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #b15f2c;
+      pointer-events: none;
+      z-index: 100000;
+      transform: translate(-50%, -50%);
+      transition: transform 0.08s ease, opacity 0.2s;
+      mix-blend-mode: difference;
+    }
+    #cursor-ring {
+      position: fixed;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(177, 95, 44, 0.65);
+      pointer-events: none;
+      z-index: 99999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.14s cubic-bezier(0.2,0.8,0.2,1), width 0.25s ease, height 0.25s ease, opacity 0.2s;
+    }
+    body:has(a:hover) #cursor-ring,
+    body:has(button:hover) #cursor-ring,
+    body:has(.portfolio-card:hover) #cursor-ring {
+      width: 56px;
+      height: 56px;
+    }
+
+    /* ============================================================
+     * PAGE TRANSITION OVERLAY
+     * ============================================================ */
+    #page-transition-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 999999;
+      pointer-events: none;
+      background: #0a0a0a;
+      opacity: 0;
+      transition: opacity 0.38s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    #page-transition-overlay.flash-in {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    /* ============================================================
+     * PORTFOLIO CARD CLICKABLE STYLES
+     * ============================================================ */
+    .portfolio-card-wrap a.portfolio-card-link {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      border-radius: var(--radius-card);
+    }
+    .portfolio-card-wrap a.portfolio-card-link:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+    .portfolio-card[data-href] {
+      cursor: none;
+    }
+    .portfolio-card-launch-hint {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-top: 1rem;
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.4);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      transition: color 0.3s;
+    }
+    .portfolio-card:hover .portfolio-card-launch-hint {
+      color: rgba(255,255,255,0.75);
+    }
+    .portfolio-card-launch-hint svg {
+      width: 0.9rem;
+      height: 0.9rem;
+      flex-shrink: 0;
+    }
+
     .shell {
       max-width: var(--container-shell);
       margin-inline: auto;
@@ -1549,6 +1644,13 @@
   </style>
 </head>
 <body>
+  <!-- Custom Cursor Elements -->
+  <canvas id="thermo-cursor-canvas" aria-hidden="true"></canvas>
+  <div id="cursor-dot" aria-hidden="true"></div>
+  <div id="cursor-ring" aria-hidden="true"></div>
+  <!-- Page Transition Overlay -->
+  <div id="page-transition-overlay" aria-hidden="true"></div>
+
   <!-- Skip Link -->
   <a href="#main" class="skip-link">Skip to content</a>
 
@@ -1860,7 +1962,7 @@
         <ul class="portfolio-grid" id="portfolio-grid">
           <!-- Project 1: COMMUN -->
           <li class="portfolio-card-wrap" style="transition-delay: 0ms;">
-            <article class="portfolio-card">
+            <article class="portfolio-card" data-href="https://github.com/Pradumnsaindane/COMMUN" role="button" tabindex="0" aria-label="View COMMUN project on GitHub">
               <div class="portfolio-card-meta">
                 <span>Community &amp; Career — 2025</span>
                 <span class="portfolio-badge">
@@ -1882,13 +1984,17 @@
                   <span class="tag-chip">Supabase</span>
                   <span class="tag-chip">PostgreSQL</span>
                 </div>
+                <p class="portfolio-card-launch-hint">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </p>
               </div>
             </article>
           </li>
 
           <!-- Project 2: LOOK THROUGH -->
           <li class="portfolio-card-wrap" style="transition-delay: 90ms;">
-            <article class="portfolio-card">
+            <article class="portfolio-card" data-href="https://github.com/Pradumnsaindane/look-through" role="button" tabindex="0" aria-label="View LOOK THROUGH project on GitHub">
               <div class="portfolio-card-meta">
                 <span>Dashboard &amp; Auth — 2024</span>
                 <span class="portfolio-badge">
@@ -1910,13 +2016,17 @@
                   <span class="tag-chip">Neon Auth</span>
                   <span class="tag-chip">Tailwind</span>
                 </div>
+                <p class="portfolio-card-launch-hint">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </p>
               </div>
             </article>
           </li>
 
           <!-- Project 3: AI MODEL GENERATOR -->
           <li class="portfolio-card-wrap" style="transition-delay: 180ms;">
-            <article class="portfolio-card">
+            <article class="portfolio-card" data-href="https://github.com/Pradumnsaindane/AI-Model-Generator" role="button" tabindex="0" aria-label="View AI Model Generator project on GitHub">
               <div class="portfolio-card-meta">
                 <span>Artificial Intelligence — 2024</span>
                 <span class="portfolio-badge">
@@ -1938,13 +2048,17 @@
                   <span class="tag-chip">OpenAI API</span>
                   <span class="tag-chip">Backend Architecture</span>
                 </div>
+                <p class="portfolio-card-launch-hint">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </p>
               </div>
             </article>
           </li>
 
           <!-- Project 4: EMPLOYEE PERFORMANCE AI -->
           <li class="portfolio-card-wrap" style="transition-delay: 270ms;">
-            <article class="portfolio-card">
+            <article class="portfolio-card" data-href="https://github.com/Pradumnsaindane/employee-performance-ai" role="button" tabindex="0" aria-label="View Employee Performance AI project on GitHub">
               <div class="portfolio-card-meta">
                 <span>Machine Learning — 2023</span>
                 <span class="portfolio-badge">
@@ -1966,6 +2080,10 @@
                   <span class="tag-chip">Flask</span>
                   <span class="tag-chip">Data Analytics</span>
                 </div>
+                <p class="portfolio-card-launch-hint">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  View on GitHub
+                </p>
               </div>
             </article>
           </li>
@@ -2934,6 +3052,169 @@
       e.preventDefault();
       scrollToId('home');
     });
+
+    /* =============================================================
+     * 14. Thermodynamic Cursor Animation
+     * ============================================================= */
+    (function initThermoCursor() {
+      const canvas = document.getElementById('thermo-cursor-canvas');
+      const dot = document.getElementById('cursor-dot');
+      const ring = document.getElementById('cursor-ring');
+      if (!canvas || !dot || !ring) return;
+
+      const ctx = canvas.getContext('2d', { alpha: true });
+      const resolution = 20;
+      const coolingFactor = 0.955;
+
+      let cols = 0, rows = 0, width = 0, height = 0;
+      let grid = new Float32Array(0);
+      const mouse = { x: -1000, y: -1000, prevX: -1000, prevY: -1000, active: false };
+      let dotX = -1000, dotY = -1000;
+      let ringX = -1000, ringY = -1000;
+
+      function resize() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = width;
+        canvas.height = height;
+        cols = Math.ceil(width / resolution);
+        rows = Math.ceil(height / resolution);
+        grid = new Float32Array(cols * rows).fill(0);
+      }
+
+      function getThermalColor(t) {
+        const r = Math.min(255, Math.max(0, t * 2.5 * 255));
+        const g = Math.min(255, Math.max(0, (t * 2.5 - 1) * 255));
+        const b = Math.min(255, Math.max(0, (t * 2.5 - 2) * 255 + t * 50));
+        const a = Math.min(1, t * 2.2);
+        return `rgba(${r + 10},${g + 10},${b + 15},${a})`;
+      }
+
+      function update() {
+        // Smooth dot position (instant)
+        dotX = mouse.x;
+        dotY = mouse.y;
+
+        // Smooth ring position (lagged)
+        ringX += (mouse.x - ringX) * 0.14;
+        ringY += (mouse.y - ringY) * 0.14;
+
+        dot.style.left = dotX + 'px';
+        dot.style.top = dotY + 'px';
+        ring.style.left = ringX + 'px';
+        ring.style.top = ringY + 'px';
+
+        // Inject heat
+        if (mouse.active) {
+          const dx = mouse.x - mouse.prevX;
+          const dy = mouse.y - mouse.prevY;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          const steps = Math.ceil(dist / (resolution / 2));
+
+          for (let s = 0; s <= steps; s++) {
+            const t = steps > 0 ? s / steps : 0;
+            const mx = mouse.prevX + dx * t;
+            const my = mouse.prevY + dy * t;
+            const col = Math.floor(mx / resolution);
+            const row = Math.floor(my / resolution);
+            const radius = 2;
+
+            for (let i = -radius; i <= radius; i++) {
+              for (let j = -radius; j <= radius; j++) {
+                const c = col + i;
+                const r = row + j;
+                if (c >= 0 && c < cols && r >= 0 && r < rows) {
+                  const d = Math.sqrt(i * i + j * j);
+                  if (d <= radius) {
+                    const idx = c + r * cols;
+                    grid[idx] = Math.min(1.0, grid[idx] + 0.4 * (1 - d / radius));
+                  }
+                }
+              }
+            }
+          }
+        }
+        mouse.prevX = mouse.x;
+        mouse.prevY = mouse.y;
+
+        // Clear canvas (fully transparent between frames)
+        ctx.clearRect(0, 0, width, height);
+
+        // Render grid
+        for (let r = 0; r < rows; r++) {
+          for (let c = 0; c < cols; c++) {
+            const idx = c + r * cols;
+            const temp = grid[idx];
+            grid[idx] *= coolingFactor;
+
+            if (temp > 0.04) {
+              const x = c * resolution;
+              const y = r * resolution;
+              const size = resolution * (0.7 + temp * 0.6);
+              const offset = (resolution - size) / 2;
+              ctx.fillStyle = getThermalColor(temp);
+              ctx.beginPath();
+              ctx.roundRect(x + offset, y + offset, size, size, size * 0.25);
+              ctx.fill();
+            }
+          }
+        }
+
+        requestAnimationFrame(update);
+      }
+
+      window.addEventListener('pointermove', (e) => {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+        mouse.active = true;
+      });
+      window.addEventListener('pointerleave', () => { mouse.active = false; });
+      document.addEventListener('pointerenter', (e) => {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+      });
+
+      window.addEventListener('resize', resize);
+      resize();
+      update();
+    })();
+
+    /* =============================================================
+     * 15. Portfolio Card Click → Smooth Transition → GitHub
+     * ============================================================= */
+    (function initProjectLinks() {
+      const overlay = document.getElementById('page-transition-overlay');
+
+      function navigateWithTransition(url) {
+        if (!overlay) { window.open(url, '_blank', 'noopener'); return; }
+        // Flash the overlay in
+        overlay.classList.add('flash-in');
+        setTimeout(() => {
+          window.open(url, '_blank', 'noopener');
+          // Fade back out
+          setTimeout(() => {
+            overlay.classList.remove('flash-in');
+          }, 320);
+        }, 360);
+      }
+
+      document.querySelectorAll('.portfolio-card[data-href]').forEach((card) => {
+        card.style.cursor = 'none';
+
+        card.addEventListener('click', (e) => {
+          e.preventDefault();
+          navigateWithTransition(card.dataset.href);
+        });
+
+        // Keyboard support
+        card.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            navigateWithTransition(card.dataset.href);
+          }
+        });
+      });
+    })();
   </script>
 </body>
 </html>
